@@ -44,7 +44,7 @@ export default function App() {
             const currentLang = Platform.OS === "ios"
                 ? NativeModules.SettingsManager.settings.AppleLocale || NativeModules.SettingsManager.settings.AppleLanguages[0]
                 : NativeModules.I18nManager.localeIdentifier;
-            await setLanguage(currentLang == "ko_KR" ? "ko" : "en");
+            await setLanguage(currentLang === "ko_KR" ? "ko" : "en");
         };
         const fonts = [ MaterialIcons.font, MaterialCommunityIcons.font, FontAwesome5.font ];
         const fontPromise = fonts.map(font => Font.loadAsync(font));

@@ -6,6 +6,7 @@ import langEn from "./translations/en";
 import langKo from "./translations/ko";
 
 (async () => {
+    const lang = await AsyncStorage.getItem(LANGUAGE);
     const resources = {
         en: {
             translation: langEn
@@ -17,7 +18,7 @@ import langKo from "./translations/ko";
 
     i18n.use(initReactI18next).init({
         resources, 
-        lng: await AsyncStorage.getItem(LANGUAGE), 
+        lng: lang === "en" ? "en" : lang === "ko" ? "ko" : "en", 
         compatibilityJSON: "v3"
     });
 })();
