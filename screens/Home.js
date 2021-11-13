@@ -11,7 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useReactiveVar } from "@apollo/client";
 import TodayFace from "../components/TodayFace";
-import { sendNotificationsVar, showOnlyWeatherVar } from "../variables";
+import { sendNotificationsVar, showOnlyWeatherVar, languageVar } from "../variables";
 import { apiKey, covidKey, useLight } from "../shared";
 
 const Container = styled.View`
@@ -157,6 +157,7 @@ export default function Home() {
     const [ weatherType, setWeatherType ] = useState(null);
     const [ weatherIcon, setWeatherIcon ] = useState(null);
     const [ locationError, setLocationError ] = useState(null);
+    const language = useReactiveVar(languageVar);
     const showOnlyWeather = useReactiveVar(showOnlyWeatherVar);
     const sendNotifications = useReactiveVar(sendNotificationsVar);
     const width = Dimensions.get("window").width;
@@ -256,6 +257,9 @@ export default function Home() {
         };
     };
 
+    useEffect(() => {
+        i18n.changeLanguage(language);
+    }, []);
     useEffect(() => {
         const lang = i18n.language;
         if (reload) {

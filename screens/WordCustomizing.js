@@ -67,7 +67,7 @@ const TextFieldText = styled.Text`
     text-align: right;
     font-family: Pretendard-Bold;
     font-size: 22px;
-    width: ${props => props.lang === "en" ? "100" : "74"}px;
+    width: ${props => props.lang === "en" ? "100" : "82"}px;
     margin-right: 6px;
 `;
 
@@ -205,8 +205,11 @@ export default function WordCustomizing() {
                         setChecked("programming");
                         await setCustomTheme("programming");
                     }} />
-                    <RadioButton.Item mode="android" color={light ? "#303030" : "#efefef"} uncheckedColor={light ? "#afafaf" : "#606060"} label={i18n.language === "en" ? "Manual (Customizing)" : "수동 (커스터마이징)"} labelStyle={{ fontFamily: "Pretendard-Medium", fontSize: 20, color: light ? "#101010" : "#fafafa" }} value="custom" status={checked === "custom" ? "checked" : "unchecked"} onPress={() => {
+                    <RadioButton.Item mode="android" color={light ? "#303030" : "#efefef"} uncheckedColor={light ? "#afafaf" : "#606060"} label={i18n.language === "en" ? "Manual (Customizing)" : "수동 (커스터마이징)"} labelStyle={{ fontFamily: "Pretendard-Medium", fontSize: 20, color: light ? "#101010" : "#fafafa" }} value="custom" status={checked === "custom" ? "checked" : "unchecked"} onPress={async() => {
                         setChecked("custom");
+                        if (watch("greatDesc")?.trim() && watch("goodDesc")?.trim() && watch("mehDesc")?.trim() && watch("frownDesc")?.trim() && watch("angryDesc")?.trim()) {
+                            await setCustomTheme([ watch("greatDesc"), watch("goodDesc"), watch("mehDesc"), watch("frownDesc"), watch("angryDesc") ]);               
+                        };
                     }} />
                 </RadioButton.Group>
                 <CustomBox style={checked !== "custom" ? { opacity: 0.4 } : null} pointerEvents={checked === "custom" ? "auto" : "none"}>
