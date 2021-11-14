@@ -5,8 +5,8 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "backgroundColor": "#FFFFFF", 
-    "primaryColor": "#FFFFFF", 
+    "backgroundColor": "#FFFFFF",
+    "primaryColor": "#FFFFFF",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",

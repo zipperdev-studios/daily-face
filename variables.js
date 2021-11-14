@@ -9,7 +9,7 @@ export const LANGUAGE = "language";
 export const sendNotificationsVar = makeVar(true);
 export const showOnlyWeatherVar = makeVar(false);
 export const customThemeVar = makeVar(false);
-export const languageVar = makeVar("en");
+export const languageVar = makeVar("ko");
 
 export const setSendNotifications = async boolean => {
     await AsyncStorage.setItem(SEND_NOTIFICATIONS, JSON.stringify(boolean));
