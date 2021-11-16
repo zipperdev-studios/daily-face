@@ -87,6 +87,7 @@ const WeatherBottomSeparator = styled.View`
 const DetailBox = styled.View`
     flex: 1;
     margin-top: 50px;
+    margin-bottom: 12px;
 `;
 
 const FeelContainer = styled.View`
@@ -271,10 +272,11 @@ export default function Home() {
                 } else {
                     const location = await Location.getCurrentPositionAsync();
                     const weather = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&lang=kr&appid=${apiKey}`);
-                    const airPollution = await axios.get(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&appid=${apiKey}`);
-                    const forecast = await axios.get(`http://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
+                    const airPollution = await axios.get(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&appid=${apiKey}`);
+                    const forecast = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
                     const corona = await axios.get(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(5, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
                     const [ { city } ] = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
+                    console.log(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(5, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
                     if (weather.status !== 200 || airPollution.status !== 200 || weather.status !== 200) {
                         setLocationError(lang === "en" ? "Cannot get weather datas :(" : "날씨 정보를 불러오지 못했습니다 :(");
                         setGradient(null);
@@ -484,13 +486,13 @@ export default function Home() {
                                             }}
                                             bezier
                                         />
-                                        {covidData ? (
+                                        {covidData?.length === 5 ? (
                                             <>
                                                 <ChartText>{i18n.language === "en" ? "Corona Confirmed Cases Chart" : "코로나 일일 확진자 차트"}</ChartText>
                                                 <LineChart
-                                                    style={{ alignSelf: "center", marginTop: 4, marginBottom: 12, marginRight: 12 }}
+                                                    style={{ alignSelf: "center", marginTop: 4, marginRight: 12 }}
                                                     data={{
-                                                        labels: [...covidData.slice(0, 5).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1] + "월"} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : ""}`)], 
+                                                        labels: [...covidData.slice(0, 4).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1] + "월"} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : ""}`)], 
                                                         datasets: [
                                                             {
                                                                 data: covidData.slice(1).map((value, index) => value.decideCnt - covidData[index].decideCnt), 
