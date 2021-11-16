@@ -23,6 +23,7 @@
       "userInterfaceStyle": "automatic"
     },
     "android": {
+      "versionCode": 2, 
       "userInterfaceStyle": "automatic",
       "softwareKeyboardLayoutMode": "pan",
       "useNextNotificationsApi": true,
