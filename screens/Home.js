@@ -406,7 +406,7 @@ export default function Home() {
                                 </BottomFeelContainer>
                                 <MicrodustContainer>
                                     <MicrodustBox>
-                                        <ProgressChart data={{ data: [weatherData?.airPollution.list[0].components.pm10 / 250] }} width={100} height={100} strokeWidth={10} radius={34} chartConfig={{
+                                        <ProgressChart data={{ data: [weatherData?.airPollution.list[0].components.pm10 / 300] }} width={100} height={100} strokeWidth={10} radius={34} chartConfig={{
                                             backgroundGradientFrom: "#ffffff", 
                                             backgroundGradientFromOpacity: 0, 
                                             backgroundGradientTo: "#ffffff", 
@@ -432,7 +432,7 @@ export default function Home() {
                                         </MicrodustTextBox>
                                     </MicrodustBox>
                                     <MicrodustBox>
-                                        <ProgressChart data={{ data: [weatherData.airPollution.list[0].components.pm2_5 / 180] }} width={100} height={100} strokeWidth={10} radius={34} chartConfig={{
+                                        <ProgressChart data={{ data: [weatherData.airPollution.list[0].components.pm2_5 / 300] }} width={100} height={100} strokeWidth={10} radius={34} chartConfig={{
                                             backgroundGradientFrom: "#ffffff", 
                                             backgroundGradientFromOpacity: 0, 
                                             backgroundGradientTo: "#ffffff", 
@@ -486,37 +486,33 @@ export default function Home() {
                                             }}
                                             bezier
                                         />
-                                        {covidData?.length === 5 ? (
-                                            <>
-                                                <ChartText>{i18n.language === "en" ? "Corona Confirmed Cases Chart" : "코로나 일일 확진자 차트"}</ChartText>
-                                                <LineChart
-                                                    style={{ alignSelf: "center", marginTop: 4, marginRight: 12 }}
-                                                    data={{
-                                                        labels: [...covidData.slice(0, 4).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1] + "월"} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : ""}`)], 
-                                                        datasets: [
-                                                            {
-                                                                data: covidData.slice(1).map((value, index) => value.decideCnt - covidData[index].decideCnt), 
-                                                                color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
-                                                                strokeWidth: 4
-                                                            }
-                                                        ]
-                                                    }}
-                                                    width={width - 15}
-                                                    height={200}
-                                                    chartConfig={{
-                                                        backgroundGradientFrom: "#ffffff", 
-                                                        backgroundGradientFromOpacity: 0, 
-                                                        backgroundGradientTo: "#ffffff", 
-                                                        backgroundGradientToOpacity: 0, 
+                                        <ChartText>{i18n.language === "en" ? "Corona Confirmed Cases Chart" : "코로나 일일 확진자 차트"}</ChartText>
+                                        <LineChart
+                                            style={{ alignSelf: "center", marginTop: 4, marginRight: 12 }}
+                                            data={{
+                                                labels: [...covidData.slice(0, covidData.length - 1).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1] + "월"} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : ""}`)], 
+                                                datasets: [
+                                                    {
+                                                        data: covidData.slice(1).map((value, index) => value.decideCnt - covidData[index].decideCnt), 
                                                         color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
-                                                        strokeWidth: 4, 
-                                                        useShadowColorFromDataset: false
-                                                    }}
-                                                    yLabelsOffset={6}
-                                                    bezier
-                                                />
-                                            </>
-                                        ): null}
+                                                        strokeWidth: 4
+                                                    }
+                                                ]
+                                            }}
+                                            width={width - 15}
+                                            height={200}
+                                            chartConfig={{
+                                                backgroundGradientFrom: "#ffffff", 
+                                                backgroundGradientFromOpacity: 0, 
+                                                backgroundGradientTo: "#ffffff", 
+                                                backgroundGradientToOpacity: 0, 
+                                                color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
+                                                strokeWidth: 4, 
+                                                useShadowColorFromDataset: false
+                                            }}
+                                            yLabelsOffset={6}
+                                            bezier
+                                        />
                                     </>
                                 ) : null}
                             </DetailBox>
