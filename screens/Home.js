@@ -486,33 +486,37 @@ export default function Home() {
                                             }}
                                             bezier
                                         />
-                                        <ChartText>{i18n.language === "en" ? "Corona Confirmed Cases Chart" : "코로나 일일 확진자 차트"}</ChartText>
-                                        <LineChart
-                                            style={{ alignSelf: "center", marginTop: 4, marginRight: 12 }}
-                                            data={{
-                                                labels: [...covidData.slice(0, covidData.length - 1).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1] + "월"} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : ""}`)], 
-                                                datasets: [
-                                                    {
-                                                        data: covidData.slice(1).map((value, index) => value.decideCnt - covidData[index].decideCnt), 
+                                        {covidData ? (
+                                            <>
+                                                <ChartText>{i18n.language === "en" ? "Corona Confirmed Cases Chart" : "코로나 일일 확진자 차트"}</ChartText>
+                                                <LineChart
+                                                    style={{ alignSelf: "center", marginTop: 4, marginRight: 12 }}
+                                                    data={{
+                                                        labels: [...covidData.slice(0, covidData.length - 1).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1] + "월"} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : ""}`)], 
+                                                        datasets: [
+                                                            {
+                                                                data: covidData.slice(1).map((value, index) => value.decideCnt - covidData[index].decideCnt), 
+                                                                color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
+                                                                strokeWidth: 4
+                                                            }
+                                                        ]
+                                                    }}
+                                                    width={width - 15}
+                                                    height={200}
+                                                    chartConfig={{
+                                                        backgroundGradientFrom: "#ffffff", 
+                                                        backgroundGradientFromOpacity: 0, 
+                                                        backgroundGradientTo: "#ffffff", 
+                                                        backgroundGradientToOpacity: 0, 
                                                         color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
-                                                        strokeWidth: 4
-                                                    }
-                                                ]
-                                            }}
-                                            width={width - 15}
-                                            height={200}
-                                            chartConfig={{
-                                                backgroundGradientFrom: "#ffffff", 
-                                                backgroundGradientFromOpacity: 0, 
-                                                backgroundGradientTo: "#ffffff", 
-                                                backgroundGradientToOpacity: 0, 
-                                                color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
-                                                strokeWidth: 4, 
-                                                useShadowColorFromDataset: false
-                                            }}
-                                            yLabelsOffset={6}
-                                            bezier
-                                        />
+                                                        strokeWidth: 4, 
+                                                        useShadowColorFromDataset: false
+                                                    }}
+                                                    yLabelsOffset={6}
+                                                    bezier
+                                                />
+                                            </>
+                                        ) : null}
                                     </>
                                 ) : null}
                             </DetailBox>
