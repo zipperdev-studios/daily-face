@@ -276,30 +276,35 @@ export default function Home() {
                     setGradient(null);
                 } else {
                     const location = await Location.getCurrentPositionAsync();
-                    let corona = null;
-                    let forecast = null;
-                    const weather = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&lang=kr&appid=${apiKey}`);
-                    const airPollution = await axios.get(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&appid=${apiKey}`);
-                    if (showOnlyWeather === false) {
-                        forecast = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
-                        corona = await axios.get(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(5, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
-                    };
-                    const [ { city } ] = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
-                    if (weather.status !== 200 || airPollution.status !== 200) {
-                        setLocationError(lang === "en" ? "Cannot get weather datas :(" : "날씨 정보를 불러오지 못했습니다 :(");
-                        setGradient(null);
-                    } else {
-                        const { icon, gradient, type } = getWeatherTypes(weather?.data.weather[0].id, weather?.data.weather[0].icon);
-                        setWeatherData({ weather: weather.data, airPollution: airPollution.data });
-                        setCityName(city);
-                        setGradient(gradient);
-                        setWeatherIcon(icon);
-                        setWeatherType(type);
-                        setLocationError(null);
-                        if (forecast?.status === 200 || corona?.status === 200) {
-                            setForecast(forecast.data);
-                            setCovidData(corona.status === 200 ? corona.data.response.body.items.item.reverse().slice(0, 6) : corona.status);
+                    if (location?.coords?.latitude && location?.coords?.longitude){
+                        let corona = null;
+                        let forecast = null;
+                        const weather = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&lang=kr&appid=${apiKey}`);
+                        const airPollution = await axios.get(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&appid=${apiKey}`);
+                        if (showOnlyWeather === false) {
+                            forecast = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
+                            corona = await axios.get(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(6, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
                         };
+                        const [ { city } ] = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
+                        if (weather.status !== 200 || airPollution.status !== 200) {
+                            setLocationError(lang === "en" ? "Cannot get weather datas :(" : "날씨 정보를 불러오지 못했습니다 :(");
+                            setGradient(null);
+                        } else {
+                            const { icon, gradient, type } = getWeatherTypes(weather?.data.weather[0].id, weather?.data.weather[0].icon);
+                            setWeatherData({ weather: weather.data, airPollution: airPollution.data });
+                            setCityName(city);
+                            setGradient(gradient);
+                            setWeatherIcon(icon);
+                            setWeatherType(type);
+                            setLocationError(null);
+                            if (forecast?.status === 200 || corona?.status === 200) {
+                                setForecast(forecast.data);
+                                setCovidData(corona.status === 200 ? corona.data.response.body.items.item.reverse() : corona.status);
+                            };
+                        };
+                    } else {
+                        setLocationError(lang === "en" ? "Cannot get geolocation :(" : "위치를 불러오지 못했습니다 :(");
+                        setGradient(null)
                     };
                 };
                 setReload(false);
@@ -357,7 +362,7 @@ export default function Home() {
             ) : (
                 <>
                     <TodayFace weatherData={weatherData} loading={reload} />
-                    {(weatherData && forecast) && (
+                    {weatherData && (
                         <>
                             <WeatherBox>
                                 <WeatherCityText>{i18n.language === "en" ? weatherData.weather.name : cityName}</WeatherCityText>
@@ -473,38 +478,42 @@ export default function Home() {
                                 {!showOnlyWeather ? (
                                     <>
                                         <ChartText>{i18n.language === "en" ? "Temp History Chart" : "온도 변화 차트"}</ChartText>
-                                        <LineChart
-                                            style={{ alignSelf: "center", marginRight: 16, marginTop: 4 }}
-                                            data={{
-                                                labels: forecast.list.map(value => `${new Date(value.dt * 1000).getHours()}${i18n.language === "en" ? "H" : "시"}`), 
-                                                datasets: [
-                                                    {
-                                                        data: forecast.list.map(value => value.main.temp), 
-                                                        color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "140, 140, 140"}, ${opacity})`, 
-                                                        strokeWidth: 4
-                                                    }
-                                                ]
-                                            }}
-                                            width={width - 10}
-                                            height={200}
-                                            chartConfig={{
-                                                decimalPlaces: 1, 
-                                                backgroundGradientFrom: "#ffffff", 
-                                                backgroundGradientFromOpacity: 0, 
-                                                backgroundGradientTo: "#ffffff", 
-                                                backgroundGradientToOpacity: 0, 
-                                                color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "180, 180, 180"}, ${opacity})`, 
-                                                strokeWidth: 4, 
-                                                useShadowColorFromDataset: false
-                                            }}
-                                            bezier
-                                        />
+                                        {forecast ? (
+                                            <LineChart
+                                                style={{ alignSelf: "center", marginRight: 16, marginTop: 4 }}
+                                                data={{
+                                                    labels: forecast.list.map(value => `${new Date(value.dt * 1000).getHours()}${i18n.language === "en" ? "H" : "시"}`), 
+                                                    datasets: [
+                                                        {
+                                                            data: forecast.list.map(value => value.main.temp), 
+                                                            color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "140, 140, 140"}, ${opacity})`, 
+                                                            strokeWidth: 4
+                                                        }
+                                                    ]
+                                                }}
+                                                width={width - 10}
+                                                height={200}
+                                                chartConfig={{
+                                                    decimalPlaces: 1, 
+                                                    backgroundGradientFrom: "#ffffff", 
+                                                    backgroundGradientFromOpacity: 0, 
+                                                    backgroundGradientTo: "#ffffff", 
+                                                    backgroundGradientToOpacity: 0, 
+                                                    color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "180, 180, 180"}, ${opacity})`, 
+                                                    strokeWidth: 4, 
+                                                    useShadowColorFromDataset: false
+                                                }}
+                                                bezier
+                                            />
+                                        ) : (
+                                            <ErrorMessage>온도 정보를 불러올 수 없어요</ErrorMessage>
+                                        )}
                                         <ChartText>{i18n.language === "en" ? "Corona Confirmed Cases Chart" : "코로나 일일 확진자 차트"}</ChartText>
                                         {covidData ? (
                                             <LineChart
                                                 style={{ alignSelf: "center", marginTop: 4, marginRight: 12 }}
                                                 data={{
-                                                    labels: [...covidData.slice(0, covidData.length - 1).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1]}${i18n.language === "ko" ? "월" : "M"} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : "D"}`)], 
+                                                    labels: [...covidData.slice(1).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1]}${i18n.language === "ko" ? "월" : ""} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : ""}`)], 
                                                     datasets: [
                                                         {
                                                             data: covidData.slice(1).map((value, index) => value.decideCnt - covidData[index].decideCnt), 

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import ToggleSwitch from "toggle-switch-react-native";
 import * as Notifications from "expo-notifications";
 import { useReactiveVar } from "@apollo/client";
-import styled from "styled-components";
+import styled from "styled-components/native";
 import { DAILY_ALARM_IDENTIFIER, sendNotificationsVar, setSendNotifications, setShowOnlyWeather, showOnlyWeatherVar } from "../variables";
 import { useLight } from "../shared";
 

@@ -3,7 +3,7 @@ import { Platform, NativeModules } from "react-native";
 import { AppearanceProvider } from "react-native-appearance";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
-import { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components/native";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
 import { StatusBar } from "expo-status-bar";
@@ -26,7 +26,7 @@ export default function App() {
         if (sendNotifications === "true" || sendNotifications === "false") {
             sendNotificationsVar(JSON.parse(sendNotifications));
         } else {
-            await setSendNotifications(true);
+            await setSendNotifications(false);
         };
         if (showOnlyWeather === "true" || showOnlyWeather === "false") {
             showOnlyWeatherVar(JSON.parse(showOnlyWeather));
