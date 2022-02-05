@@ -285,14 +285,14 @@ export default function Home() {
                             forecast = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
                             corona = await axios.get(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(6, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
                         };
-                        const [ { city } ] = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
+                        const [ { city, region } ] = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
                         if (weather.status !== 200 || airPollution.status !== 200) {
                             setLocationError(lang === "en" ? "Cannot get weather datas :(" : "날씨 정보를 불러오지 못했습니다 :(");
                             setGradient(null);
                         } else {
                             const { icon, gradient, type } = getWeatherTypes(weather?.data.weather[0].id, weather?.data.weather[0].icon);
                             setWeatherData({ weather: weather.data, airPollution: airPollution.data });
-                            setCityName(city);
+                            setCityName(city ? city : region);
                             setGradient(gradient);
                             setWeatherIcon(icon);
                             setWeatherType(type);
@@ -362,7 +362,7 @@ export default function Home() {
             ) : (
                 <>
                     <TodayFace weatherData={weatherData} loading={reload} />
-                    {weatherData && (
+                    {(weatherData?.weather && weatherData?.airPollution) && (
                         <>
                             <WeatherBox>
                                 <WeatherCityText>{i18n.language === "en" ? weatherData.weather.name : cityName}</WeatherCityText>
