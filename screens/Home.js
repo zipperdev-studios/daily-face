@@ -11,7 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useReactiveVar } from "@apollo/client";
 import TodayFace from "../components/TodayFace";
-import { sendNotificationsVar, showOnlyWeatherVar, languageVar } from "../variables";
+import { sendNotificationsVar, showOnlyWeatherVar, languageVar, DAILY_ALARM_IDENTIFIER } from "../variables";
 import { apiKey, covidKey, useLight } from "../shared";
 
 const Container = styled.View`
@@ -262,6 +262,11 @@ export default function Home() {
         i18n.changeLanguage(language);
     }, []);
     useEffect(() => {
+        if (showOnlyWeather === false) {
+            setReload(true);
+        };
+    }, [showOnlyWeather]);
+    useEffect(() => {
         const lang = i18n.language;
         if (reload) {
             (async () => {
@@ -271,25 +276,30 @@ export default function Home() {
                     setGradient(null);
                 } else {
                     const location = await Location.getCurrentPositionAsync();
+                    let corona = null;
+                    let forecast = null;
                     const weather = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&lang=kr&appid=${apiKey}`);
                     const airPollution = await axios.get(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&appid=${apiKey}`);
-                    const forecast = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
-                    const corona = await axios.get(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(5, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
+                    if (showOnlyWeather === false) {
+                        forecast = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
+                        corona = await axios.get(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(5, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
+                    };
                     const [ { city } ] = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
-                    console.log(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(5, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
-                    if (weather.status !== 200 || airPollution.status !== 200 || weather.status !== 200) {
+                    if (weather.status !== 200 || airPollution.status !== 200) {
                         setLocationError(lang === "en" ? "Cannot get weather datas :(" : "날씨 정보를 불러오지 못했습니다 :(");
                         setGradient(null);
                     } else {
                         const { icon, gradient, type } = getWeatherTypes(weather?.data.weather[0].id, weather?.data.weather[0].icon);
                         setWeatherData({ weather: weather.data, airPollution: airPollution.data });
                         setCityName(city);
-                        setForecast(forecast.data);
-                        setCovidData(corona.status === 200 ? corona.data.response.body.items.item.reverse().slice(0, 6) : null);
                         setGradient(gradient);
                         setWeatherIcon(icon);
                         setWeatherType(type);
                         setLocationError(null);
+                        if (forecast?.status === 200 || corona?.status === 200) {
+                            setForecast(forecast.data);
+                            setCovidData(corona.status === 200 ? corona.data.response.body.items.item.reverse().slice(0, 6) : corona.status);
+                        };
                     };
                 };
                 setReload(false);
@@ -304,20 +314,22 @@ export default function Home() {
         };
     }, [ i18n.language ]);
     useEffect(() => {
-        if (sendNotifications) {
-            Notifications.cancelAllScheduledNotificationsAsync();
-            Notifications.scheduleNotificationAsync({
-                content: {
-                    title: t("alarmT"), 
-                    body: t("alarmP")
-                }, 
-                trigger: {
-                    hour: 6, 
-                    minute: 0, 
-                    repeats: true
-                }
-            });
-        };
+        (async () => {
+            if (sendNotifications) {
+                await Notifications.cancelScheduledNotificationAsync(DAILY_ALARM_IDENTIFIER);
+                await Notifications.scheduleNotificationAsync({
+                    content: {
+                        title: t("alarmT"), 
+                        body: t("alarmP")
+                    }, 
+                    trigger: {
+                        hour: 6, 
+                        minute: 0, 
+                        repeats: true
+                    }
+                });
+            };
+        })();
     }, []);
 
     return <Container isOnlyWeather={showOnlyWeather}>
@@ -350,7 +362,7 @@ export default function Home() {
                             <WeatherBox>
                                 <WeatherCityText>{i18n.language === "en" ? weatherData.weather.name : cityName}</WeatherCityText>
                                 <FirstWeatherContainer>
-                                    <MaterialCommunityIcons style={{ marginTop: 2, marginRight: 6 }} name={weatherIcon} size={70} color={light ? "#fafafa" : "#808080"} />
+                                    <MaterialCommunityIcons style={{ marginTop: 2, marginRight: 6 }} name={weatherIcon} size={70} color={light ? "#fafafa" : "#cccccc"} />
                                     <WeatherTemp>{Math.round(weatherData?.weather.main.temp)}&#8451;</WeatherTemp>
                                 </FirstWeatherContainer>
                                 <WeatherBottomBox>
@@ -362,44 +374,44 @@ export default function Home() {
                             <DetailBox>
                                 <FeelContainer>
                                     <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="thermometer" size={30} color={light ? "#fafafa" : "#808080"} />
+                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="thermometer" size={30} color={light ? "#fafafa" : "#cccccc"} />
                                         <DetailText>{i18n.language === "en" ? "Feeling Temp" : "체감온도"}</DetailText>
                                         <DetailText>{Math.round(weatherData.weather.main.feels_like)}&#8451;</DetailText>
                                     </DetailIndexBox>
                                     <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="air-humidifier" size={30} color={light ? "#fafafa" : "#808080"} />
+                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="air-humidifier" size={30} color={light ? "#fafafa" : "#cccccc"} />
                                         <DetailText>{i18n.language === "en" ? "Humidity" : "습도"}</DetailText>
                                         <DetailText>{Math.round(weatherData.weather.main.humidity)}&#37;</DetailText>
                                     </DetailIndexBox>
                                     <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-sunset-up" size={30} color={light ? "#fafafa" : "#808080"} />
+                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-sunset-up" size={30} color={light ? "#fafafa" : "#cccccc"} />
                                         <DetailText>{i18n.language === "en" ? "Sunrize Time" : "일출시간"}</DetailText>
                                         <DetailText>{new Date(weatherData.weather.sys.sunrise * 1000).getHours()}{i18n.language === "en" ? ":" : "시 "}{new Date(weatherData.weather.sys.sunrise * 1000).getMinutes()}{i18n.language === "ko" && "분"}</DetailText>
                                     </DetailIndexBox>
                                     <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-sunset-down" size={30} color={light ? "#fafafa" : "#808080"} />
+                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-sunset-down" size={30} color={light ? "#fafafa" : "#cccccc"} />
                                         <DetailText>{i18n.language === "en" ? "Sunset Time" : "일몰시간"}</DetailText>
                                         <DetailText>{new Date(weatherData.weather.sys.sunset * 1000).getHours()}{i18n.language === "en" ? ":" : "시 "}{new Date(weatherData.weather.sys.sunset * 1000).getMinutes()}{i18n.language === "ko" && "분"}</DetailText>
                                     </DetailIndexBox>
                                 </FeelContainer>
                                 <BottomFeelContainer>
                                     <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-windy-variant" size={30} color={light ? "#fafafa" : "#808080"} />
+                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-windy-variant" size={30} color={light ? "#fafafa" : "#cccccc"} />
                                         <DetailText>{i18n.language === "en" ? "Wind Speed" : "풍속"}</DetailText>
                                         <DetailText>{weatherData.weather.wind.speed.toFixed(2)}m/s</DetailText>
                                     </DetailIndexBox>
                                     <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-windy" size={30} color={light ? "#fafafa" : "#808080"} />
+                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-windy" size={30} color={light ? "#fafafa" : "#cccccc"} />
                                         <DetailText>{i18n.language === "en" ? "Squall Speed" : "돌풍"}</DetailText>
                                         <DetailText>{weatherData.weather.wind.gust.toFixed(2)}m/s</DetailText>
                                     </DetailIndexBox>
                                     <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="sign-direction" size={30} color={light ? "#fafafa" : "#808080"} />
+                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="sign-direction" size={30} color={light ? "#fafafa" : "#cccccc"} />
                                         <DetailText>{i18n.language === "en" ? "Wind Direction" : "풍향"}</DetailText>
                                         <DetailText>{Math.round(weatherData.weather.wind.deg)}&#176;</DetailText>
                                     </DetailIndexBox>
                                     <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-cloudy-arrow-right" size={30} color={light ? "#fafafa" : "#808080"} />
+                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-cloudy-arrow-right" size={30} color={light ? "#fafafa" : "#cccccc"} />
                                         <DetailText>{i18n.language === "en" ? "Cloudiness" : "흐림정도"}</DetailText>
                                         <DetailText>{Math.round(weatherData.weather.clouds.all)}&#37;</DetailText>
                                     </DetailIndexBox>
@@ -468,55 +480,56 @@ export default function Home() {
                                                 datasets: [
                                                     {
                                                         data: forecast.list.map(value => value.main.temp), 
-                                                        color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
+                                                        color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "140, 140, 140"}, ${opacity})`, 
                                                         strokeWidth: 4
                                                     }
                                                 ]
                                             }}
                                             width={width - 10}
                                             height={200}
-                                            chartConfig={ {
+                                            chartConfig={{
+                                                decimalPlaces: 1, 
                                                 backgroundGradientFrom: "#ffffff", 
                                                 backgroundGradientFromOpacity: 0, 
                                                 backgroundGradientTo: "#ffffff", 
                                                 backgroundGradientToOpacity: 0, 
-                                                color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
+                                                color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "180, 180, 180"}, ${opacity})`, 
                                                 strokeWidth: 4, 
                                                 useShadowColorFromDataset: false
                                             }}
                                             bezier
                                         />
+                                        <ChartText>{i18n.language === "en" ? "Corona Confirmed Cases Chart" : "코로나 일일 확진자 차트"}</ChartText>
                                         {covidData ? (
-                                            <>
-                                                <ChartText>{i18n.language === "en" ? "Corona Confirmed Cases Chart" : "코로나 일일 확진자 차트"}</ChartText>
-                                                <LineChart
-                                                    style={{ alignSelf: "center", marginTop: 4, marginRight: 12 }}
-                                                    data={{
-                                                        labels: [...covidData.slice(0, covidData.length - 1).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1] + "월"} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : ""}`)], 
-                                                        datasets: [
-                                                            {
-                                                                data: covidData.slice(1).map((value, index) => value.decideCnt - covidData[index].decideCnt), 
-                                                                color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
-                                                                strokeWidth: 4
-                                                            }
-                                                        ]
-                                                    }}
-                                                    width={width - 15}
-                                                    height={200}
-                                                    chartConfig={{
-                                                        backgroundGradientFrom: "#ffffff", 
-                                                        backgroundGradientFromOpacity: 0, 
-                                                        backgroundGradientTo: "#ffffff", 
-                                                        backgroundGradientToOpacity: 0, 
-                                                        color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "80, 80, 80"}, ${opacity})`, 
-                                                        strokeWidth: 4, 
-                                                        useShadowColorFromDataset: false
-                                                    }}
-                                                    yLabelsOffset={6}
-                                                    bezier
-                                                />
-                                            </>
-                                        ) : null}
+                                            <LineChart
+                                                style={{ alignSelf: "center", marginTop: 4, marginRight: 12 }}
+                                                data={{
+                                                    labels: [...covidData.slice(0, covidData.length - 1).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1]}${i18n.language === "ko" ? "월" : "M"} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : "D"}`)], 
+                                                    datasets: [
+                                                        {
+                                                            data: covidData.slice(1).map((value, index) => value.decideCnt - covidData[index].decideCnt), 
+                                                            color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "140, 140, 140"}, ${opacity})`, 
+                                                            strokeWidth: 4
+                                                        }
+                                                    ]
+                                                }}
+                                                width={width - 15}
+                                                height={200}
+                                                chartConfig={{
+                                                    decimalPlaces: 0, 
+                                                    backgroundGradientFrom: "#ffffff", 
+                                                    backgroundGradientFromOpacity: 0, 
+                                                    backgroundGradientTo: "#ffffff", 
+                                                    backgroundGradientToOpacity: 0, 
+                                                    color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "180, 180, 180"}, ${opacity})`, 
+                                                    strokeWidth: 4, 
+                                                    useShadowColorFromDataset: false
+                                                }}
+                                                bezier
+                                            />
+                                        ) : (
+                                            <ErrorMessage>{covidData && `${covidData} `}에러가 일어나서 확진자를 불러올 수 없어요</ErrorMessage>
+                                        )}
                                     </>
                                 ) : null}
                             </DetailBox>

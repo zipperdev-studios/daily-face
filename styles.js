@@ -28,10 +28,10 @@ export const lightTheme = {
 export const darkTheme = {
     bgColor: "#101010", 
     fontColor: "#efefef", 
-    deepFontColor: "#808080", 
+    deepFontColor: "#cccccc", 
     deepColor: "#181818", 
     lightColor: "#030303", 
-    differColor: "#dedede", 
+    differColor: "#737373", 
     error: "#ff5c33", 
     borderColor: "rgb(60, 60, 60)", 
     borderFocusColor: "rgb(130, 130, 130)", 

@@ -77,7 +77,7 @@ export default function TodayFace({ weatherData, loading }) {
     }, [ loading, customTheme, i18n.language ]);
 
     return <FaceBox icon={icon} style={icon !== "loading" ? { elevation: 20, shadowOpacity: 0.1, shadowColor: "#000000", shadowOffset: { width: 0, height: -2 } } : null}>
-        {icon === "loading" ? <ActivityIndicator style={{ marginTop: 10 }} size={60} color={light ? "#fafafa" : "#808080"} /> : <FontAwesome5 name={icon} size={145} color={light ? "#fafafa" : "#808080"} />}
+        {icon === "loading" ? <ActivityIndicator style={{ marginTop: 10 }} size={60} color={light ? "#fafafa" : "#cccccc"} /> : <FontAwesome5 name={icon} size={145} color={light ? "#fafafa" : "#cccccc"} />}
         <FaceDetail>
             <FaceType>{icon === "loading" ? (i18n.language === "en" ? "Loading..." : "로딩 중...") : i18n.language === "en" ? typeTextsEn[icons.indexOf(icon)] : typeTextsKo[icons.indexOf(icon)]}</FaceType>
             {icon === "loading" ? (

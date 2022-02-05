@@ -4,7 +4,7 @@ import ToggleSwitch from "toggle-switch-react-native";
 import * as Notifications from "expo-notifications";
 import { useReactiveVar } from "@apollo/client";
 import styled from "styled-components";
-import { sendNotificationsVar, setSendNotifications, setShowOnlyWeather, showOnlyWeatherVar } from "../variables";
+import { DAILY_ALARM_IDENTIFIER, sendNotificationsVar, setSendNotifications, setShowOnlyWeather, showOnlyWeatherVar } from "../variables";
 import { useLight } from "../shared";
 
 const Container = styled.View`
@@ -107,8 +107,10 @@ export default function Settings({ navigation }) {
                     thumbOffStyle={{ backgroundColor: light ? "#fafafa" : "#101010" }}
                     size="medium"
                     onToggle={async () => {
+                        await Notifications.cancelScheduledNotificationAsync(DAILY_ALARM_IDENTIFIER);
                         if (sendNotifyFalsy) {
-                            Notifications.scheduleNotificationAsync({
+                            await Notifications.scheduleNotificationAsync({
+                                identifier: DAILY_ALARM_IDENTIFIER, 
                                 content: {
                                     title: t("alarmT"), 
                                     body: t("alarmP")
@@ -119,8 +121,6 @@ export default function Settings({ navigation }) {
                                     repeats: true
                                 }
                             });
-                        } else {
-                            Notifications.cancelAllScheduledNotificationsAsync();
                         };
                         setSendNotifyFalsy(!sendNotifyFalsy);
                         await setSendNotifications(!!sendNotifyFalsy);

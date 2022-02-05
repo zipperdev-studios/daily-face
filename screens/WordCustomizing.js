@@ -80,7 +80,7 @@ const StyledTextInput = styled.TextInput`
 `;
 
 const Button = styled.TouchableOpacity`
-    background-color: ${props => props.theme.differColor};
+    background-color: ${props => props.theme.fontColor};
     width: 100%;
     height: 42px;
     border-radius: 4px;

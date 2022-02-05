@@ -33,7 +33,7 @@ export default function DrawerNav() {
             headerTitleStyle: {
                 opacity: 0, 
             }, 
-            headerTintColor: light ? "#fafafa" : "#808080"
+            headerTintColor: light ? "#fafafa" : "#cccccc"
         }} component={Home} />
         <Drawer.Screen name="Settings" options={{
             title: t("sets")
