@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { makeVar } from "@apollo/client";
 
-export const DAILY_ALARM_IDENTIFIER = "dail_alarm";
+export const DAILY_ALARM_IDENTIFIER = "daily_alarm";
 export const SEND_NOTIFICATIONS = "send_notifications";
 export const SHOW_ONLY_WEATHER = "show_only_weather";
 export const CUSTOM_THEME = "custom_theme";

@@ -19,7 +19,10 @@ import langKo from "./translations/ko";
     i18n.use(initReactI18next).init({
         resources, 
         lng: lang === "en" ? "en" : "ko", 
-        compatibilityJSON: "v3"
+        compatibilityJSON: "v3", 
+        interpolation: {
+            escapeValue: false
+        }
     });
 })();
 

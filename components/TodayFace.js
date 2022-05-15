@@ -27,7 +27,7 @@ const FaceDetail = styled.View`
 const FaceType = styled.Text`
     font-size: 26px;
     font-family: Pretendard-Bold;
-    color: ${props => props.theme.deepFontColor};
+    color: ${props => props.loading ? props.theme.fontColor : props.theme.deepFontColor};
 `;
 
 const FaceDesc = styled.Text`
@@ -35,7 +35,7 @@ const FaceDesc = styled.Text`
     text-align: center;
     font-size: 19px;
     font-family: Pretendard-Medium;
-    color: ${props => props.theme.deepFontColor};
+    color: ${props => props.loading ? props.theme.fontColor : props.theme.deepFontColor};
 `;
 
 export default function TodayFace({ weatherData, loading }) {
@@ -77,13 +77,13 @@ export default function TodayFace({ weatherData, loading }) {
     }, [ loading, customTheme, i18n.language ]);
 
     return <FaceBox icon={icon} style={icon !== "loading" ? { elevation: 20, shadowOpacity: 0.1, shadowColor: "#000000", shadowOffset: { width: 0, height: -2 } } : null}>
-        {icon === "loading" ? <ActivityIndicator style={{ marginTop: 10 }} size={60} color={light ? "#fafafa" : "#cccccc"} /> : <FontAwesome5 name={icon} size={145} color={light ? "#fafafa" : "#cccccc"} />}
+        {icon === "loading" ? <ActivityIndicator style={{ marginTop: 10 }} size={60} color={light ? "#101010" : "#efefef"} /> : <FontAwesome5 name={icon} size={145} color={light ? "#fafafa" : "#cccccc"} />}
         <FaceDetail>
-            <FaceType>{icon === "loading" ? (i18n.language === "en" ? "Loading..." : "로딩 중...") : i18n.language === "en" ? typeTextsEn[icons.indexOf(icon)] : typeTextsKo[icons.indexOf(icon)]}</FaceType>
+            <FaceType loading={loading}>{icon === "loading" ? (i18n.language === "en" ? "Loading..." : "로딩 중...") : i18n.language === "en" ? typeTextsEn[icons.indexOf(icon)] : typeTextsKo[icons.indexOf(icon)]}</FaceType>
             {icon === "loading" ? (
-                <FaceDesc>{""}</FaceDesc>
+                <FaceDesc loading={loading}>{""}</FaceDesc>
             ) : (
-                <FaceDesc>{descText}</FaceDesc>
+                <FaceDesc loading={loading}>{descText}</FaceDesc>
             )}
         </FaceDetail>
     </FaceBox>;

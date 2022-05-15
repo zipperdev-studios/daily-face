@@ -20,7 +20,7 @@ const Container = styled.View`
     ${props => props.isOnlyWeather ? css`
         align-items: center;
     ` : null}
-    background-color: ${props => props.theme.differColor};
+    background-color: ${props => props.theme.deepColor};
 `;
 
 const ScrollContainer = styled.ScrollView`
@@ -259,7 +259,8 @@ export default function Home() {
     };
 
     useEffect(() => {
-        i18n.changeLanguage(language);
+        // i18n.changeLanguage(language);
+        // Uncomment upper line
     }, []);
     useEffect(() => {
         if (showOnlyWeather === false) {
@@ -275,24 +276,25 @@ export default function Home() {
                     setLocationError(lang === "en" ? "Location permission is not granted :(" : "위치 권한이 거부되었습니다 :(");
                     setGradient(null);
                 } else {
+                    console.log("a")
                     const location = await Location.getCurrentPositionAsync();
                     if (location?.coords?.latitude && location?.coords?.longitude){
                         let corona = null;
-                        let forecast = null;
+                        let forecast = null; // axios infinite fetching
                         const weather = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&lang=kr&appid=${apiKey}`);
                         const airPollution = await axios.get(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&appid=${apiKey}`);
                         if (showOnlyWeather === false) {
                             forecast = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
                             corona = await axios.get(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(6, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
                         };
-                        const [ { city, region } ] = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
+                        const locations = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
                         if (weather.status !== 200 || airPollution.status !== 200) {
                             setLocationError(lang === "en" ? "Cannot get weather datas :(" : "날씨 정보를 불러오지 못했습니다 :(");
                             setGradient(null);
                         } else {
                             const { icon, gradient, type } = getWeatherTypes(weather?.data.weather[0].id, weather?.data.weather[0].icon);
                             setWeatherData({ weather: weather.data, airPollution: airPollution.data });
-                            setCityName(city ? city : region);
+                            setCityName(locations[0]?.city ? locations[0]?.city : locations[0]?.region);
                             setGradient(gradient);
                             setWeatherIcon(icon);
                             setWeatherType(type);
@@ -304,7 +306,7 @@ export default function Home() {
                         };
                     } else {
                         setLocationError(lang === "en" ? "Cannot get geolocation :(" : "위치를 불러오지 못했습니다 :(");
-                        setGradient(null)
+                        setGradient(null);
                     };
                 };
                 setReload(false);

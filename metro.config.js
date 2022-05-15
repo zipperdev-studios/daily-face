@@ -6,5 +6,9 @@ exports.resolver = {
   sourceExts: [
     ...defaultResolver.sourceExts,
     "cjs",
+    "jsx",
+    "js",
+    "ts",
+    "tsx",
   ],
 };

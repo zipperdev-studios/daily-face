@@ -5,7 +5,6 @@ import DrawerContent from "../components/DrawerContent";
 import Settings from "../screens/Settings";
 import Home from "../screens/Home"; 
 import { useLight } from "../shared";
-import Information from '../screens/Information';
 
 const Drawer = createDrawerNavigator();
 
@@ -13,7 +12,7 @@ export default function DrawerNav() {
     const light = useLight();
     const { t } = useTranslation();
 
-    return <Drawer.Navigator initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} screenOptions={{
+    return <Drawer.Navigator useLegacyImplementation={true} initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} screenOptions={{
         headerTintColor: light ? "#101010" : "#fafafa", 
         drawerType: "slide", 
         drawerLabelStyle: {
@@ -32,8 +31,7 @@ export default function DrawerNav() {
             headerTransparent: true, 
             headerTitleStyle: {
                 opacity: 0, 
-            }, 
-            headerTintColor: light ? "#fafafa" : "#cccccc"
+            }
         }} component={Home} />
         <Drawer.Screen name="Settings" options={{
             title: t("sets")

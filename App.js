@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Platform, NativeModules } from "react-native";
 import { AppearanceProvider } from "react-native-appearance";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { ThemeProvider } from "styled-components/native";
@@ -19,6 +20,7 @@ export default function App() {
     const [ loading, setLoading ] = useState(true);
 
     const preload = async () => {
+        console.log("preloading...")
         const sendNotifications = await AsyncStorage.getItem(SEND_NOTIFICATIONS);
         const showOnlyWeather = await AsyncStorage.getItem(SHOW_ONLY_WEATHER);
         const customTheme = await AsyncStorage.getItem(CUSTOM_THEME);
@@ -55,30 +57,32 @@ export default function App() {
         });
         return Promise.all([ ...fontPromise ]);
     };
-    if (loading) {
-        return <AppLoading
+    if (loading === true) {
+        return <AppLoading // Not showing splash img
             startAsync={preload}
             onFinish={() => setLoading(false)}
             onError={console.warn}
         />;
     };
     return (
-        <AppearanceProvider>
-            <ThemeProvider theme={light ? lightTheme : darkTheme}>
-                <StatusBar style={light ? "dark" : "light"} backgroundColor="transparent" />
-                <NavigationContainer theme={{
-                    ...DefaultTheme, 
-                    colors: {
-                        background: light ? "#fafafa" : "#161616", 
-                        border: light ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.2)", 
-                        card: light ? "#fafafa" : "#202020", 
-                        text: light ? "#454545" : "#efefef", 
-                        primary: light ? "#454545" : "#efefef"
-                    }
-                }}>
-                    <StackNav />
-                </NavigationContainer>
-            </ThemeProvider>
-        </AppearanceProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <AppearanceProvider>
+                <ThemeProvider theme={light ? lightTheme : darkTheme}>
+                    <StatusBar style={light ? "dark" : "light"} backgroundColor="transparent" />
+                    <NavigationContainer theme={{
+                        ...DefaultTheme, 
+                        colors: {
+                            background: light ? "#fafafa" : "#161616", 
+                            border: light ? "rgba(0, 0, 0, 0.06)" : "rgba(255, 255, 255, 0.2)", 
+                            card: light ? "#fafafa" : "#202020", 
+                            text: light ? "#454545" : "#efefef", 
+                            primary: light ? "#454545" : "#efefef"
+                        }
+                    }}>
+                        <StackNav />
+                    </NavigationContainer>
+                </ThemeProvider>
+            </AppearanceProvider>
+        </GestureHandlerRootView>
     );
 };

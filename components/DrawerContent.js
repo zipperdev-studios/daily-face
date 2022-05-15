@@ -1,7 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
-import { DrawerItemList, DrawerItem } from "@react-navigation/drawer";
+import { DrawerItemList } from "@react-navigation/drawer";
 import { MaterialIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 import { useLight } from "../shared";
