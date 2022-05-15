@@ -276,7 +276,6 @@ export default function Home() {
                     setLocationError(lang === "en" ? "Location permission is not granted :(" : "위치 권한이 거부되었습니다 :(");
                     setGradient(null);
                 } else {
-                    console.log("a")
                     const location = await Location.getCurrentPositionAsync();
                     if (location?.coords?.latitude && location?.coords?.longitude){
                         let corona = null;
