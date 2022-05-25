@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl, Dimensions } from "react-native";
 import { LineChart, ProgressChart } from "react-native-chart-kit";
+import { BannerAd, BannerAdSize } from "@react-native-admob/admob";
 import * as Notifications from "expo-notifications";
 import styled, { css } from "styled-components/native";
 import * as Location from "expo-location";
@@ -11,11 +12,14 @@ import { LinearGradient } from "expo-linear-gradient";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useReactiveVar } from "@apollo/client";
 import TodayFace from "../components/TodayFace";
-import { sendNotificationsVar, showOnlyWeatherVar, languageVar, DAILY_ALARM_IDENTIFIER } from "../variables";
-import { apiKey, covidKey, useLight } from "../shared";
+import { sendNotificationsVar, showTempChartVar, languageVar, DAILY_ALARM_IDENTIFIER } from "../variables";
+import { apiKey, useLight } from "../shared";
 
 const Container = styled.View`
     flex: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
     margin-top: -25px;
     ${props => props.isOnlyWeather ? css`
         align-items: center;
@@ -37,9 +41,9 @@ const ErrorMessage = styled.Text`
 `;
 
 const WeatherBox = styled.View`
-    flex: 1;
+    display: flex;
     align-items: center;
-    margin-top: 10px;
+    margin-top: 30px;
 `;
 
 const WeatherCityText = styled.Text`
@@ -50,7 +54,7 @@ const WeatherCityText = styled.Text`
 `;
 
 const FirstWeatherContainer = styled.View`
-    flex: 1;
+    display: flex;
     align-items: center;
     flex-direction: row;
     margin-right: 5px;
@@ -63,7 +67,7 @@ const WeatherTemp = styled.Text`
 `;
 
 const WeatherBottomBox = styled.View`
-    flex: 1;
+    display: flex;
     flex-direction: row;
     align-items: center;
     margin-top: 2px;
@@ -85,18 +89,27 @@ const WeatherBottomSeparator = styled.View`
 `;
 
 const DetailBox = styled.View`
-    flex: 1;
-    margin-top: 50px;
-    margin-bottom: 12px;
+    margin-top: 30px;
+    margin-bottom: 70px;
+`;
+
+const FeelBox = styled.View`
+    display: flex;
+    align-self: center;
+    align-items: center;
+    background-color: ${props => props.theme.transparent.none};
+    border-radius: 15px;
+    padding: 20px 0;
+    width: 92%;
 `;
 
 const FeelContainer = styled.View`
-    flex: 1;
+    display: flex;
     flex-direction: row;
 `;
 
 const BottomFeelContainer = styled.View`
-    flex: 1;
+    display: flex;
     flex-direction: row;
     margin-top: 10px;
 `;
@@ -113,11 +126,13 @@ const DetailText = styled.Text`
 `;
 
 const MicrodustContainer = styled.View`
-    flex: 1;
+    display: flex;
     flex-direction: row;
     align-self: center;
     align-items: center;
     margin-top: 20px;
+    background-color: ${props => props.theme.transparent.none};
+    border-radius: 15px;
     width: 92%;
 `;
 
@@ -125,10 +140,12 @@ const MicrodustBox = styled.View`
     flex: 1;
     flex-direction: row;
     align-items: center;
+    justify-content: center;
+    padding-right: 20px;
 `;
 
 const MicrodustTextBox = styled.View`
-    margin-left: -6px;
+    margin-left: -2px;
 `;
 
 const MicrodustText = styled.Text`
@@ -145,21 +162,28 @@ const ChartText = styled.Text`
     margin-top: 24px;
 `;
 
-export default function Home() {
+const Darkmode = styled.View`
+    position: absolute;
+    z-index: 10;
+    background-color: rgba(0, 20, 0, 0.4);
+    width: 200%;
+    height: 100%;
+`;
+
+export default function Home({ navigation }) {
     const light = useLight();
     const { t, i18n } = useTranslation();
     const [ reload, setReload ] = useState(true);
     const [ cityName, setCityName ] = useState(null);
     const [ gradient, setGradient ] = useState(null);
     const [ forecast, setForecast ] = useState(null);
-    const [ covidData, setCovidData ] = useState(null);
     const [ refreshing, setRefreshing ] = useState(false);
     const [ weatherData, setWeatherData ] = useState(null);
     const [ weatherType, setWeatherType ] = useState(null);
     const [ weatherIcon, setWeatherIcon ] = useState(null);
     const [ locationError, setLocationError ] = useState(null);
     const language = useReactiveVar(languageVar);
-    const showOnlyWeather = useReactiveVar(showOnlyWeatherVar);
+    const showTempChart = useReactiveVar(showTempChartVar);
     const sendNotifications = useReactiveVar(sendNotificationsVar);
     const width = Dimensions.get("window").width;
 
@@ -168,13 +192,13 @@ export default function Home() {
         if ((id >= 200 && id <= 202) || (id >= 230 && id <= 232)) {
             return {
                 icon: "weather-lightning-rainy", 
-                gradient: ["#005c97", "#fff94c"], 
+                gradient: ["#005c97", "#76712a"], 
                 type: lang === "en" ? "Lightning Rain" : "천둥비"
             };
         } else if (id >= 210 && id <= 221) {
             return {
                 icon: "weather-lightning", 
-                gradient: ["#f8ffae", "#43c6ac"], 
+                gradient: ["#197fbe", "#96752f"], 
                 type: lang === "en" ? "Lightning" : "벼락"
             };
         } else if ((id >= 300 && id <= 321) || id === 520) {
@@ -192,37 +216,37 @@ export default function Home() {
         } else if (id === 511 || id === 600 || id === 601 || (id >= 611 && id <= 613) || id === 620 || id === 621) {
             return {
                 icon: "weather-snowy", 
-                gradient: ["#f2fcfe", "#1c92d2"], 
+                gradient: ["#d0f4fB", "#1c92d2"], 
                 type: lang === "en" ? "Snow" : "눈"
             };
         } else if (id === 602 || id === 622) {
             return {
                 icon: "weather-snowy-heavy", 
-                gradient: ["#eef2f3", "#8e9eab"], 
+                gradient: ["#b9dcf2", "#8e9eab"], 
                 type: lang === "en" ? "Heavy Snow" : "폭설"
             };
         } else if (id === 615 || id === 616) {
             return {
                 icon: "weather-snowy-rainy", 
-                gradient: ["#ffffff", "#076585"], 
+                gradient: ["#b9dcf2", "#076585"], 
                 type: lang === "en" ? "Snow and Rain" : "눈비"
             };
         } else if (id >= 701 && id <= 771) {
             return {
                 icon: "weather-fog", 
-                gradient: ["#2c3e50", "#bdc3c7"], 
+                gradient: ["#9fa8ad", "#496785"], 
                 type: lang === "en" ? "Fog" : "안개"
             };
         } else if (id === 781) {
             return {
                 icon: "weather-tornado", 
-                gradient: ["#4286f4", "#373b44"], 
+                gradient: ["#5e98f6", "#4f5563"], 
                 type: lang === "en" ? "Tornado" : "폭풍"
             };
         } else if (icon === "01d") {
             return {
                 icon: "weather-sunny", 
-                gradient: ["#fdc830", "#f37335"], 
+                gradient: ["#f7d07e", "#fc944e"], 
                 type: lang === "en" ? "Clear" : "맑음"
             };
         } else if (icon === "01n") {
@@ -240,13 +264,13 @@ export default function Home() {
         } else if (icon === "02n") {
             return {
                 icon: "weather-night-partly-cloudy", 
-                gradient: ["#535353", "#101010"], 
+                gradient: ["#858585", "#424242"], 
                 type: lang === "en" ? "Little Clouds" : "조금 흐림"
             };
         } else if (id >= 802 && id <= 804) {
             return {
                 icon: "weather-cloudy", 
-                gradient: ["#00d2ff", "#3a7bd5"], 
+                gradient: ["#373737", "#3a7bd5"], 
                 type: lang === "en" ? "Clouds" : "흐림"
             };
         } else {
@@ -259,67 +283,7 @@ export default function Home() {
     };
 
     useEffect(() => {
-        // i18n.changeLanguage(language);
-        // Uncomment upper line
-    }, []);
-    useEffect(() => {
-        if (showOnlyWeather === false) {
-            setReload(true);
-        };
-    }, [showOnlyWeather]);
-    useEffect(() => {
-        const lang = i18n.language;
-        if (reload) {
-            (async () => {
-                const { status } = await Location.requestForegroundPermissionsAsync();
-                if (status !== "granted") {
-                    setLocationError(lang === "en" ? "Location permission is not granted :(" : "위치 권한이 거부되었습니다 :(");
-                    setGradient(null);
-                } else {
-                    const location = await Location.getCurrentPositionAsync();
-                    if (location?.coords?.latitude && location?.coords?.longitude){
-                        let corona = null;
-                        let forecast = null; // axios infinite fetching
-                        const weather = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&lang=kr&appid=${apiKey}`);
-                        const airPollution = await axios.get(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&appid=${apiKey}`);
-                        if (showOnlyWeather === false) {
-                            forecast = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
-                            corona = await axios.get(`http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19InfStateJson?serviceKey=${covidKey}&pageNo=1&numOfRows=10&startCreateDt=${moment().subtract(6, "days").format("YYYYMMDD")}&endCreateDt=${moment().format("YYYYMMDD")}`);
-                        };
-                        const locations = await Location.reverseGeocodeAsync({ latitude: location.coords.latitude, longitude: location.coords.longitude });
-                        if (weather.status !== 200 || airPollution.status !== 200) {
-                            setLocationError(lang === "en" ? "Cannot get weather datas :(" : "날씨 정보를 불러오지 못했습니다 :(");
-                            setGradient(null);
-                        } else {
-                            const { icon, gradient, type } = getWeatherTypes(weather?.data.weather[0].id, weather?.data.weather[0].icon);
-                            setWeatherData({ weather: weather.data, airPollution: airPollution.data });
-                            setCityName(locations[0]?.city ? locations[0]?.city : locations[0]?.region);
-                            setGradient(gradient);
-                            setWeatherIcon(icon);
-                            setWeatherType(type);
-                            setLocationError(null);
-                            if (forecast?.status === 200 || corona?.status === 200) {
-                                setForecast(forecast.data);
-                                setCovidData(corona.status === 200 ? corona.data.response.body.items.item.reverse() : corona.status);
-                            };
-                        };
-                    } else {
-                        setLocationError(lang === "en" ? "Cannot get geolocation :(" : "위치를 불러오지 못했습니다 :(");
-                        setGradient(null);
-                    };
-                };
-                setReload(false);
-                setRefreshing(false);
-            })();
-        };
-    }, [reload]);
-    useEffect(() => {
-        if (!refreshing) {
-            const { type } = getWeatherTypes(weatherData?.weather.weather[0].id, weatherData?.weather.weather[0].icon);
-            setWeatherType(type);
-        };
-    }, [ i18n.language ]);
-    useEffect(() => {
+        i18n.changeLanguage(language);
         (async () => {
             if (sendNotifications) {
                 await Notifications.cancelScheduledNotificationAsync(DAILY_ALARM_IDENTIFIER);
@@ -337,12 +301,74 @@ export default function Home() {
             };
         })();
     }, []);
+    useEffect(() => {
+        if (showTempChart === true) {
+            setReload(true);
+        };
+    }, [ showTempChart ]);
+    useEffect(() => {
+        const lang = i18n.language;
+        if (weatherData) {
+            navigation.setOptions({
+                headerTintColor: light ? "#fafafa" : "#dfdfdf"
+            });
+        };
+        if (reload) {
+            (async () => {
+                const { status } = await Location.requestForegroundPermissionsAsync();
+                if (status !== "granted") {
+                    setLocationError(lang === "en" ? "Location permission is not granted :(" : "위치 권한이 거부되었습니다 :(");
+                    setGradient(null);
+                } else {
+                    const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Highest, maximumAge: 10000 });
+                    if (location?.coords?.latitude && location?.coords?.longitude){
+                        let forecast = null;
+                        const weather = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&lang=kr&appid=${apiKey}`);
+                        const airPollution = await axios.get(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&appid=${apiKey}`);
+                        if (showTempChart === true) {
+                            forecast = await axios.get(`https://api.openweathermap.org/data/2.5/forecast?lat=${location.coords.latitude}&lon=${location.coords.longitude}&units=metric&cnt=8&appid=${apiKey}`);
+                        };
+                        const geocode = await Location.reverseGeocodeAsync(location.coords);
+                        if (weather.status !== 200 || airPollution.status !== 200) {
+                            setLocationError(lang === "en" ? "Cannot get weather datas :(" : "날씨 정보를 불러오지 못했습니다 :(");
+                            setGradient(null);
+                        } else {
+                            const { icon, gradient, type } = getWeatherTypes(weather?.data.weather[0].id, weather?.data.weather[0].icon);
+                            setWeatherData({ weather: weather.data, airPollution: airPollution.data });
+                            setCityName(geocode[0]?.city ? geocode[0]?.city : geocode[0]?.region);
+                            setGradient(gradient);
+                            setWeatherIcon(icon);
+                            setWeatherType(type);
+                            setLocationError(null);
+                            if (forecast?.status === 200) {
+                                setForecast(forecast.data);
+                            };
+                        };
+                    } else {
+                        setLocationError(lang === "en" ? "Cannot get geolocation :(" : "위치를 불러오지 못했습니다 :(");
+                        setGradient(null);
+                    };
+                };
+                setReload(false);
+                setRefreshing(false);
+            })();
+        };
+    }, [ reload ]);
+    useEffect(() => {
+        if (!refreshing) {
+            const { type } = getWeatherTypes(weatherData?.weather.weather[0].id, weatherData?.weather.weather[0].icon);
+            setWeatherType(type);
+        };
+    }, [ i18n.language ]);
 
-    return <Container isOnlyWeather={showOnlyWeather}>
+    return <Container isOnlyWeather={showTempChart}>
+        {!light ? (
+            <Darkmode style={{ elevation: 10 }} pointerEvents="none" />  
+        ) : null}
         {gradient ? (
             <LinearGradient colors={gradient} style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0 }} />
         ) : null}
-        <ScrollContainer showsVerticalScrollIndicator={false} refreshControl={
+        <ScrollContainer showsVerticalScrollIndicator={false} contentContainerStyle={{ position: "relative", minHeight: "100%" }} refreshControl={
             <RefreshControl
                 refreshing={refreshing}
                 onRefresh={() => {
@@ -366,62 +392,71 @@ export default function Home() {
                     {(weatherData?.weather && weatherData?.airPollution) && (
                         <>
                             <WeatherBox>
-                                <WeatherCityText>{i18n.language === "en" ? weatherData.weather.name : cityName}</WeatherCityText>
+                                <WeatherCityText>{cityName ? cityName : "불러올 수 없음"}</WeatherCityText>
                                 <FirstWeatherContainer>
-                                    <MaterialCommunityIcons style={{ marginTop: 2, marginRight: 6 }} name={weatherIcon} size={70} color={light ? "#fafafa" : "#cccccc"} />
+                                    <MaterialCommunityIcons style={{ marginTop: 2, marginRight: 6 }} name={weatherIcon} size={70} color="#fafafa" />
                                     <WeatherTemp>{Math.round(weatherData?.weather.main.temp)}&#8451;</WeatherTemp>
                                 </FirstWeatherContainer>
                                 <WeatherBottomBox>
                                     <WeatherText>{weatherType}</WeatherText>
                                     <WeatherBottomSeparator />
-                                    <WeatherText style={{ fontFamily: "Pretendard-Medium" }}>{Math.round(weatherData.weather.main.temp_max)}&#8451; / {Math.round(weatherData.weather.main.temp_min)}&#8451;</WeatherText>
+                                    <MaterialCommunityIcons style={{ marginRight: 1, marginBottom: 8 }} name="thermometer-chevron-up" size={24} color="#fafafa" />
+                                    <WeatherText style={{ fontFamily: "Pretendard-Medium", marginRight: 6 }}>
+                                        {Math.round(weatherData.weather.main.temp_max)}&#8451;
+                                    </WeatherText>
+                                    <MaterialCommunityIcons style={{ marginRight: 1, marginBottom: 8 }} name="thermometer-chevron-down" size={24} color="#fafafa" />
+                                    <WeatherText style={{ fontFamily: "Pretendard-Medium" }}>
+                                        {Math.round(weatherData.weather.main.temp_min)}&#8451;
+                                    </WeatherText>
                                 </WeatherBottomBox>
                             </WeatherBox>
                             <DetailBox>
-                                <FeelContainer>
-                                    <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="thermometer" size={30} color={light ? "#fafafa" : "#cccccc"} />
-                                        <DetailText>{i18n.language === "en" ? "Feeling Temp" : "체감온도"}</DetailText>
-                                        <DetailText>{Math.round(weatherData.weather.main.feels_like)}&#8451;</DetailText>
-                                    </DetailIndexBox>
-                                    <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="air-humidifier" size={30} color={light ? "#fafafa" : "#cccccc"} />
-                                        <DetailText>{i18n.language === "en" ? "Humidity" : "습도"}</DetailText>
-                                        <DetailText>{Math.round(weatherData.weather.main.humidity)}&#37;</DetailText>
-                                    </DetailIndexBox>
-                                    <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-sunset-up" size={30} color={light ? "#fafafa" : "#cccccc"} />
-                                        <DetailText>{i18n.language === "en" ? "Sunrize Time" : "일출시간"}</DetailText>
-                                        <DetailText>{new Date(weatherData.weather.sys.sunrise * 1000).getHours()}{i18n.language === "en" ? ":" : "시 "}{new Date(weatherData.weather.sys.sunrise * 1000).getMinutes()}{i18n.language === "ko" && "분"}</DetailText>
-                                    </DetailIndexBox>
-                                    <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-sunset-down" size={30} color={light ? "#fafafa" : "#cccccc"} />
-                                        <DetailText>{i18n.language === "en" ? "Sunset Time" : "일몰시간"}</DetailText>
-                                        <DetailText>{new Date(weatherData.weather.sys.sunset * 1000).getHours()}{i18n.language === "en" ? ":" : "시 "}{new Date(weatherData.weather.sys.sunset * 1000).getMinutes()}{i18n.language === "ko" && "분"}</DetailText>
-                                    </DetailIndexBox>
-                                </FeelContainer>
-                                <BottomFeelContainer>
-                                    <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-windy-variant" size={30} color={light ? "#fafafa" : "#cccccc"} />
-                                        <DetailText>{i18n.language === "en" ? "Wind Speed" : "풍속"}</DetailText>
-                                        <DetailText>{weatherData.weather.wind.speed.toFixed(2)}m/s</DetailText>
-                                    </DetailIndexBox>
-                                    <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-windy" size={30} color={light ? "#fafafa" : "#cccccc"} />
-                                        <DetailText>{i18n.language === "en" ? "Squall Speed" : "돌풍"}</DetailText>
-                                        <DetailText>{weatherData.weather.wind.gust.toFixed(2)}m/s</DetailText>
-                                    </DetailIndexBox>
-                                    <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="sign-direction" size={30} color={light ? "#fafafa" : "#cccccc"} />
-                                        <DetailText>{i18n.language === "en" ? "Wind Direction" : "풍향"}</DetailText>
-                                        <DetailText>{Math.round(weatherData.weather.wind.deg)}&#176;</DetailText>
-                                    </DetailIndexBox>
-                                    <DetailIndexBox>
-                                        <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-cloudy-arrow-right" size={30} color={light ? "#fafafa" : "#cccccc"} />
-                                        <DetailText>{i18n.language === "en" ? "Cloudiness" : "흐림정도"}</DetailText>
-                                        <DetailText>{Math.round(weatherData.weather.clouds.all)}&#37;</DetailText>
-                                    </DetailIndexBox>
-                                </BottomFeelContainer>
+                                <FeelBox>
+                                    <FeelContainer>
+                                        <DetailIndexBox>
+                                            <MaterialCommunityIcons style={{ marginBottom: 1 }} name="thermometer" size={30} color="#fafafa" />
+                                            <DetailText>{i18n.language === "en" ? "Feeling Temp" : "체감온도"}</DetailText>
+                                            <DetailText>{Math.round(weatherData.weather.main.feels_like)}&#8451;</DetailText>
+                                        </DetailIndexBox>
+                                        <DetailIndexBox>
+                                            <MaterialCommunityIcons style={{ marginBottom: 1 }} name="air-humidifier" size={30} color="#fafafa" />
+                                            <DetailText>{i18n.language === "en" ? "Humidity" : "습도"}</DetailText>
+                                            <DetailText>{Math.round(weatherData.weather.main.humidity)}&#37;</DetailText>
+                                        </DetailIndexBox>
+                                        <DetailIndexBox>
+                                            <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-sunset-up" size={30} color="#fafafa" />
+                                            <DetailText>{i18n.language === "en" ? "Sunrize Time" : "일출시간"}</DetailText>
+                                            <DetailText>{new Date(weatherData.weather.sys.sunrise * 1000).getHours()}{i18n.language === "en" ? ":" : "시 "}{new Date(weatherData.weather.sys.sunrise * 1000).getMinutes()}{i18n.language === "ko" && "분"}</DetailText>
+                                        </DetailIndexBox>
+                                        <DetailIndexBox>
+                                            <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-sunset-down" size={30} color="#fafafa" />
+                                            <DetailText>{i18n.language === "en" ? "Sunset Time" : "일몰시간"}</DetailText>
+                                            <DetailText>{new Date(weatherData.weather.sys.sunset * 1000).getHours()}{i18n.language === "en" ? ":" : "시 "}{new Date(weatherData.weather.sys.sunset * 1000).getMinutes()}{i18n.language === "ko" && "분"}</DetailText>
+                                        </DetailIndexBox>
+                                    </FeelContainer>
+                                    <BottomFeelContainer>
+                                        <DetailIndexBox>
+                                            <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-windy-variant" size={30} color="#fafafa" />
+                                            <DetailText>{i18n.language === "en" ? "Wind Speed" : "풍속"}</DetailText>
+                                            <DetailText>{weatherData.weather.wind.speed.toFixed(2)}m/s</DetailText>
+                                        </DetailIndexBox>
+                                        <DetailIndexBox>
+                                            <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-cloudy-arrow-right" size={30} color="#fafafa" />
+                                            <DetailText>{i18n.language === "en" ? "Wind Direction" : "풍향"}</DetailText>
+                                            <DetailText>{Math.round(weatherData.weather.wind.deg)}&#176;</DetailText>
+                                        </DetailIndexBox>
+                                        <DetailIndexBox>
+                                            <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-fog" size={30} color="#fafafa" />
+                                            <DetailText>{i18n.language === "en" ? "Cloudiness" : "흐림정도"}</DetailText>
+                                            <DetailText>{Math.round(weatherData.weather.clouds.all)}&#37;</DetailText>
+                                        </DetailIndexBox>
+                                        <DetailIndexBox>
+                                            <MaterialCommunityIcons style={{ marginBottom: 1 }} name="arrow-collapse-down" size={30} color="#fafafa" />
+                                            <DetailText>{i18n.language === "en" ? "Pressure" : "기압"}</DetailText>
+                                            <DetailText>{weatherData.weather.main.pressure}hPa</DetailText>
+                                        </DetailIndexBox>
+                                    </BottomFeelContainer>
+                                </FeelBox>
                                 <MicrodustContainer>
                                     <MicrodustBox>
                                         <ProgressChart data={{ data: [weatherData?.airPollution.list[0].components.pm10 / 300] }} width={100} height={100} strokeWidth={10} radius={34} chartConfig={{
@@ -432,15 +467,15 @@ export default function Home() {
                                             color: (opacity=1) => {
                                                 const microdust = weatherData?.airPollution.list[0].components.pm10;
                                                 if (microdust < 25) {
-                                                    return `rgba(102, 255, 153, ${opacity})`;
+                                                    return `rgba(160, 248, 194, ${opacity})`;
                                                 } else if (microdust >= 25 && microdust < 50) {
-                                                    return `rgba(153, 255, 153, ${opacity})`;
+                                                    return `rgba(162, 218, 153, ${opacity})`;
                                                 } else if (microdust >= 50 && microdust < 90) {
-                                                    return `rgba(255, 204, 102, ${opacity})`;
+                                                    return `rgba(209, 221, 173, ${opacity})`;
                                                 } else if (microdust >= 90 && microdust < 180) {
-                                                    return `rgba(255, 153, 102, ${opacity})`;
+                                                    return `rgba(240, 193, 164, ${opacity})`;
                                                 } else {
-                                                    return `rgba(255, 102, 102, ${opacity})`;
+                                                    return `rgba(255, 125, 128, ${opacity})`;
                                                 };
                                             }
                                         }} hideLegend={true} />
@@ -456,17 +491,17 @@ export default function Home() {
                                             backgroundGradientTo: "#ffffff", 
                                             backgroundGradientToOpacity: 0, 
                                             color: (opacity=1) => {
-                                                const microdust = weatherData.airPollution.list[0].components.pm10;
+                                                const microdust = weatherData?.airPollution.list[0].components.pm2_5;
                                                 if (microdust < 25) {
-                                                    return `rgba(102, 255, 153, ${opacity})`;
+                                                    return `rgba(160, 248, 194, ${opacity})`;
                                                 } else if (microdust >= 25 && microdust < 50) {
-                                                    return `rgba(153, 255, 153, ${opacity})`;
+                                                    return `rgba(162, 218, 153, ${opacity})`;
                                                 } else if (microdust >= 50 && microdust < 90) {
-                                                    return `rgba(255, 204, 102, ${opacity})`;
+                                                    return `rgba(209, 221, 173, ${opacity})`;
                                                 } else if (microdust >= 90 && microdust < 180) {
-                                                    return `rgba(255, 153, 102, ${opacity})`;
+                                                    return `rgba(240, 193, 164, ${opacity})`;
                                                 } else {
-                                                    return `rgba(255, 102, 102, ${opacity})`;
+                                                    return `rgba(255, 125, 128, ${opacity})`;
                                                 };
                                             }
                                         }} hideLegend={true} />
@@ -476,7 +511,7 @@ export default function Home() {
                                         </MicrodustTextBox>
                                     </MicrodustBox>
                                 </MicrodustContainer>
-                                {!showOnlyWeather ? (
+                                {showTempChart ? (
                                     <>
                                         <ChartText>{i18n.language === "en" ? "Temp History Chart" : "온도 변화 차트"}</ChartText>
                                         {forecast ? (
@@ -487,7 +522,7 @@ export default function Home() {
                                                     datasets: [
                                                         {
                                                             data: forecast.list.map(value => value.main.temp), 
-                                                            color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "140, 140, 140"}, ${opacity})`, 
+                                                            color: (opacity = 1) => `rgba(250, 250, 250, ${opacity})`, 
                                                             strokeWidth: 4
                                                         }
                                                     ]
@@ -500,7 +535,7 @@ export default function Home() {
                                                     backgroundGradientFromOpacity: 0, 
                                                     backgroundGradientTo: "#ffffff", 
                                                     backgroundGradientToOpacity: 0, 
-                                                    color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "180, 180, 180"}, ${opacity})`, 
+                                                    color: (opacity = 1) => `rgba(250, 250, 250, ${opacity})`, 
                                                     strokeWidth: 4, 
                                                     useShadowColorFromDataset: false
                                                 }}
@@ -509,40 +544,10 @@ export default function Home() {
                                         ) : (
                                             <ErrorMessage>온도 정보를 불러올 수 없어요</ErrorMessage>
                                         )}
-                                        <ChartText>{i18n.language === "en" ? "Corona Confirmed Cases Chart" : "코로나 일일 확진자 차트"}</ChartText>
-                                        {covidData ? (
-                                            <LineChart
-                                                style={{ alignSelf: "center", marginTop: 4, marginRight: 12 }}
-                                                data={{
-                                                    labels: [...covidData.slice(1).map(value => `${i18n.language === "en" ? moment(value.createDt).format("MMM") : value.createDt.split("-")[1] <= 9 ? value.createDt.split("-")[1].slice(1, ) : value.createDt.split("-")[1]}${i18n.language === "ko" ? "월" : ""} ${value.createDt.split("-")[2].split(" ")[0] <= 9 ? value.createDt.split("-")[2].split(" ")[0].slice(1, ) : value.createDt.split("-")[2].split(" ")[0]}${i18n.language === "ko" ? "일" : ""}`)], 
-                                                    datasets: [
-                                                        {
-                                                            data: covidData.slice(1).map((value, index) => value.decideCnt - covidData[index].decideCnt), 
-                                                            color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "140, 140, 140"}, ${opacity})`, 
-                                                            strokeWidth: 4
-                                                        }
-                                                    ]
-                                                }}
-                                                width={width - 15}
-                                                height={200}
-                                                chartConfig={{
-                                                    decimalPlaces: 0, 
-                                                    backgroundGradientFrom: "#ffffff", 
-                                                    backgroundGradientFromOpacity: 0, 
-                                                    backgroundGradientTo: "#ffffff", 
-                                                    backgroundGradientToOpacity: 0, 
-                                                    color: (opacity = 1) => `rgba(${light ? "250, 250, 250" : "180, 180, 180"}, ${opacity})`, 
-                                                    strokeWidth: 4, 
-                                                    useShadowColorFromDataset: false
-                                                }}
-                                                bezier
-                                            />
-                                        ) : (
-                                            <ErrorMessage>{covidData && `${covidData} `}에러가 일어나서 확진자를 불러올 수 없어요</ErrorMessage>
-                                        )}
-                                    </>
+                                        </>
                                 ) : null}
                             </DetailBox>
+                            <BannerAd size={BannerAdSize.FULL_BANNER} unitId="ca-app-pub-9076487351719022/9809223989" style={{ alignSelf: "center", elevation: 20, position: "absolute", bottom: 0 }} />
                         </>
                     )}
                 </>

@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { useIsFocused } from '@react-navigation/native';
+import { BannerAd, BannerAdSize } from "@react-native-admob/admob";
 import ToggleSwitch from "toggle-switch-react-native";
 import * as Notifications from "expo-notifications";
 import { useReactiveVar } from "@apollo/client";
 import styled from "styled-components/native";
-import { DAILY_ALARM_IDENTIFIER, sendNotificationsVar, setSendNotifications, setShowOnlyWeather, showOnlyWeatherVar } from "../variables";
+import { DAILY_ALARM_IDENTIFIER, sendNotificationsVar, setSendNotifications, setShowTempChart, showTempChartVar } from "../variables";
+import SaveButton from "../components/SaveButton";
 import { useLight } from "../shared";
 
 const Container = styled.View`
-    display: flex;
+    flex: 1;
     padding: 10px;
+    position: relative;
+    overflow: hidden;
 `;
 
 const Title = styled.Text`
@@ -66,49 +71,55 @@ const SetDesc = styled.Text`
 
 export default function Settings({ navigation }) {
     const light = useLight();
-    const { t } = useTranslation();
-    const showOnlyWeather = useReactiveVar(showOnlyWeatherVar);
+    const { t, i18n } = useTranslation();
+    const isFocused = useIsFocused();
+    const showTempChart = useReactiveVar(showTempChartVar);
     const sendNotifications = useReactiveVar(sendNotificationsVar);
-    const [ sendNotifyFalsy, setSendNotifyFalsy ] = useState(!sendNotifications);
-    const [ showOnlyWeatherFalsy, setShowOnlyWeatherFalsy ] = useState(showOnlyWeather);
+    const [ sendNotifyState, setSendNotifyState ] = useState(sendNotifications);
+    const [ showTempChartState, setShowTempChartState ] = useState(showTempChart);
 
+    useEffect(() => {
+        setSendNotifyState(sendNotifications);
+        setShowTempChartState(showTempChart);
+    }, [ isFocused ]);
+    
     return <Container>
         <Title>{t("sets_normal")}</Title>
         <SetsContainer style={{ marginBottom: 12 }}>
             <SetBox isLast={false}>
                 <SetContent>
-                    <SetText>{t("sets_weatherT")}</SetText>
-                    <SetDesc>{t("sets_weatherP")}</SetDesc>
+                    <SetText>{t("sets_tempT")}</SetText>
+                    <SetDesc>{t("sets_tempP")}</SetDesc>
                 </SetContent>
                 <ToggleSwitch
-                    isOn={showOnlyWeatherFalsy}
-                    offColor="#00b894"
-                    onColor="#ff7675"
+                    isOn={showTempChartState}
+                    offColor="#ff7675"
+                    onColor="#c0df85"
                     thumbOnStyle={{ backgroundColor: light ? "#fafafa" : "#101010" }}
                     thumbOffStyle={{ backgroundColor: light ? "#fafafa" : "#101010" }}
                     size="medium"
                     onToggle={async () => {
-                        setShowOnlyWeatherFalsy(!showOnlyWeatherFalsy);
-                        await setShowOnlyWeather(!showOnlyWeatherFalsy);
+                        const prevShowTempChartState = showTempChartState;
+                        setShowTempChartState(!prevShowTempChartState);
                     }}
                     animationSpeed={100}
                 />
             </SetBox>
-            <SetBox isLast={true}>
+            <SetBox isLast={true}> 
                 <SetContent>
                     <SetText>{t("sets_dailyT")}</SetText>
                     <SetDesc>{t("sets_dailyP")}</SetDesc>
                 </SetContent>
                 <ToggleSwitch
-                    isOn={sendNotifyFalsy}
-                    offColor="#00b894"
-                    onColor="#ff7675"
+                    isOn={sendNotifyState}
+                    offColor="#ff7675"
+                    onColor="#c0df85"
                     thumbOnStyle={{ backgroundColor: light ? "#fafafa" : "#101010" }}
                     thumbOffStyle={{ backgroundColor: light ? "#fafafa" : "#101010" }}
                     size="medium"
                     onToggle={async () => {
                         await Notifications.cancelScheduledNotificationAsync(DAILY_ALARM_IDENTIFIER);
-                        if (sendNotifyFalsy) {
+                        if (sendNotifyState) {
                             await Notifications.scheduleNotificationAsync({
                                 identifier: DAILY_ALARM_IDENTIFIER, 
                                 content: {
@@ -122,8 +133,8 @@ export default function Settings({ navigation }) {
                                 }
                             });
                         };
-                        setSendNotifyFalsy(!sendNotifyFalsy);
-                        await setSendNotifications(!!sendNotifyFalsy);
+                        const prevSendNotifyState = sendNotifyState;
+                        setSendNotifyState(!prevSendNotifyState);
                     }}
                     animationSpeed={100}
                 />
@@ -147,5 +158,14 @@ export default function Settings({ navigation }) {
                 </SetContent>
             </SetBoxBtn>
         </SetsContainer>
+        <SaveButton lang={i18n.language} style={{ bottom: 70 }} disabled={sendNotifyState === sendNotifications && showTempChartState === showTempChart} onPress={async () => {
+            if (sendNotifyState !== sendNotifications) {
+                await setSendNotifications(sendNotifyState);
+            };
+            if (showTempChartState !== showTempChart) {
+                await setShowTempChart(showTempChartState);
+            };
+        }} />
+        <BannerAd size={BannerAdSize.FULL_BANNER} unitId="ca-app-pub-9076487351719022/3255988573" style={{ alignSelf: "center", position: "absolute", bottom: 0 }} />
     </Container>;
 };

@@ -9,18 +9,18 @@ import { customThemeVar } from "../variables";
 import { useLight } from "../shared";
 
 const FaceBox = styled.View`
-    flex: 1;
+    display: flex;
     align-items: center;
     padding: 85px 0 30px;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
     background-color: ${props => props.icon === "loading" ? "transparent" : props.theme.faceBg[props.icon]};
 `;
 
 const FaceDetail = styled.View`
-    flex: 1;
+    display: flex;
     align-items: center;
-    width: 70%;
+    width: 80%;
     margin-top: 4px;
 `;
 
@@ -31,7 +31,7 @@ const FaceType = styled.Text`
 `;
 
 const FaceDesc = styled.Text`
-    width: 75%;
+    width: 65%;
     text-align: center;
     font-size: 19px;
     font-family: Pretendard-Medium;
@@ -45,7 +45,7 @@ export default function TodayFace({ weatherData, loading }) {
     const [ descText, setDescText ] = useState("");
     const customTheme = useReactiveVar(customThemeVar);
 
-    const icons = ["laugh", "smile", "meh", "fronw", "angry"];
+    const icons = ["laugh", "smile", "meh", "frown", "angry"];
     const typeTextsKo = ["아주 좋음", "좋음", "보통", "나쁨", "아주 나쁨"];
     const typeTextsEn = ["Very Great", "Good", "Meh", "Not Good", "Really Bad"];
 
@@ -71,19 +71,18 @@ export default function TodayFace({ weatherData, loading }) {
         const microdust = weatherData?.airPollution.list[0].components.pm10;
         const ultramicrodust = weatherData?.airPollution.list[0].components.pm2_5;
         const allMicrodust = Math.round((microdust + ultramicrodust) / 2);
-
         const faceDesc = getFaceDesc(customTheme, icons, currentIcon, allMicrodust, i18n);
         setDescText(faceDesc);
     }, [ loading, customTheme, i18n.language ]);
 
-    return <FaceBox icon={icon} style={icon !== "loading" ? { elevation: 20, shadowOpacity: 0.1, shadowColor: "#000000", shadowOffset: { width: 0, height: -2 } } : null}>
-        {icon === "loading" ? <ActivityIndicator style={{ marginTop: 10 }} size={60} color={light ? "#101010" : "#efefef"} /> : <FontAwesome5 name={icon} size={145} color={light ? "#fafafa" : "#cccccc"} />}
+    return <FaceBox icon={icon} style={icon !== "loading" ? { elevation: 14, shadowOpacity: 0.05, shadowColor: "#000000", shadowOffset: { width: 0, height: -2 } } : null}>
+        {icon === "loading" ? <ActivityIndicator style={{ marginTop: 10 }} size={60} color={light ? "#101010" : "#efefef"} /> : <FontAwesome5 name={icon} size={145} color="#fafafa" />}
         <FaceDetail>
-            <FaceType loading={loading}>{icon === "loading" ? (i18n.language === "en" ? "Loading..." : "로딩 중...") : i18n.language === "en" ? typeTextsEn[icons.indexOf(icon)] : typeTextsKo[icons.indexOf(icon)]}</FaceType>
+            <FaceType loading={icon === "loading"}>{icon === "loading" ? (i18n.language === "en" ? "Loading..." : "로딩 중...") : i18n.language === "en" ? typeTextsEn[icons.indexOf(icon)] : typeTextsKo[icons.indexOf(icon)]}</FaceType>
             {icon === "loading" ? (
-                <FaceDesc loading={loading}>{""}</FaceDesc>
+                <FaceDesc loading={true}>{""}</FaceDesc>
             ) : (
-                <FaceDesc loading={loading}>{descText}</FaceDesc>
+                <FaceDesc loading={false}>{descText}</FaceDesc>
             )}
         </FaceDetail>
     </FaceBox>;

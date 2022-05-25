@@ -6,6 +6,7 @@ export const lightTheme = {
     lightColor: "#f3f3f3", 
     differColor: "#2c2c2c", 
     error: "#ff5c33", 
+    accent: "#c0df85", 
     borderColor: "rgb(210, 210, 210)", 
     borderFocusColor: "rgb(160, 160, 160)", 
     transparent: {
@@ -16,11 +17,11 @@ export const lightTheme = {
         half: "rgba(0, 0, 0, 0.7)"
     }, 
     faceBg: {
-        laugh: "#1abc9c", 
-        smile: "#44d580", 
-        meh: "#ecc113", 
-        fronw: "#f39c12", 
-        angry: "#d35400"
+        laugh: "#69c575", 
+        smile: "#80b36c", 
+        meh: "#a8a765", 
+        frown: "#ab884d", 
+        angry: "#bd6848"
     }, 
     isDark: false
 };
@@ -28,11 +29,12 @@ export const lightTheme = {
 export const darkTheme = {
     bgColor: "#101010", 
     fontColor: "#efefef", 
-    deepFontColor: "#cccccc", 
+    deepFontColor: "#fafafa", 
     deepColor: "#181818", 
     lightColor: "#030303", 
     differColor: "#737373", 
     error: "#ff5c33", 
+    accent: "#83a46e", 
     borderColor: "rgb(60, 60, 60)", 
     borderFocusColor: "rgb(130, 130, 130)", 
     transparent: {
@@ -43,11 +45,11 @@ export const darkTheme = {
         half: "rgba(255, 255, 255, 0.7)"
     }, 
     faceBg: {
-        laugh: "#1abc9c", 
-        smile: "#44d580", 
-        meh: "#ecc113", 
-        fronw: "#f39c12", 
-        angry: "#d35400"
+        laugh: "#5dc06b", 
+        smile: "#77ad61", 
+        meh: "#89a15a", 
+        frown: "#ab884d", 
+        angry: "#bd6848"
     }, 
     isDark: true
 };

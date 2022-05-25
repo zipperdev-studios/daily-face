@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { RadioButton } from "react-native-paper";
+import { BannerAd, BannerAdSize } from "@react-native-admob/admob";
 import { useReactiveVar } from "@apollo/client";
 import styled from "styled-components/native";
+import SaveButton from "../components/SaveButton";
 import { languageVar, setLanguage } from "../variables";
 import { useLight } from "../shared";
 
 const Container = styled.View`
     flex: 1;
+    position: relative;
     padding: 20px;
-    padding-top: 20px;
+    padding-bottom: 0;
 `;
 
 const Title = styled.Text`
@@ -27,23 +30,32 @@ const Radios = styled.View`
     overflow: hidden;
 `;
 
-export default function ChangeLang() {
+export default function ChangeLang({ navigation }) {
     const light = useLight();
     const language = useReactiveVar(languageVar);
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
     const [ checked, setChecked ] = useState(language);
+    
+    useEffect(() => {
+        navigation.setOptions({
+            title: checked === "en" ? "Changing Default Language" : checked === "ko" ? "기본언어 설정 변경" : "Changing Default Language"
+        });
+    }, [ checked ]);
 
     return <Container>
-        <Title>{t("langSelect")}</Title>
+        <Title>{checked === "en" ? "Select language" : checked === "ko" ? "언어 선택" : "Select language"}</Title>
         <Radios>
             <RadioButton.Group onValueChange={async value => {
                 setChecked(value);
-                i18n.changeLanguage(value);
-                await setLanguage(value);
             }} value={checked}>
                 <RadioButton.Item mode="android" color={light ? "#303030" : "#efefef"} uncheckedColor={light ? "#afafaf" : "#606060"} label="English" labelStyle={{ fontFamily: "Pretendard-Medium", fontSize: 20, color: light ? "#101010" : "#fafafa" }} value="en" status={checked === "en" ? "checked" : "unchecked"} />
                 <RadioButton.Item mode="android" color={light ? "#303030" : "#efefef"} uncheckedColor={light ? "#afafaf" : "#606060"} label="한국어" labelStyle={{ fontFamily: "Pretendard-Medium", fontSize: 20, color: light ? "#101010" : "#fafafa" }} value="ko" status={checked === "ko" ? "checked" : "unchecked"} />
             </RadioButton.Group>
+            <SaveButton lang={checked} disabled={language === checked} onPress={async () => {
+                i18n.changeLanguage(checked);
+                await setLanguage(checked);
+            }} />
         </Radios>
+        <BannerAd size={BannerAdSize.FULL_BANNER} unitId="ca-app-pub-9076487351719022/1398598537" style={{ alignSelf: "center", marginTop: 10 }} />
     </Container>;
 };

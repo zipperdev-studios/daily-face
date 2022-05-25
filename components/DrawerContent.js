@@ -1,5 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { BannerAd, BannerAdSize } from "@react-native-admob/admob";
 import { useNavigation } from "@react-navigation/native";
 import { DrawerItemList } from "@react-navigation/drawer";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -22,15 +23,21 @@ const TitleBox = styled.View`
 `;
 
 const TitleText = styled.Text`
-    font-size: 18px;
+    font-size: 22px;
     font-family: Pretendard-Bold;
     color: ${props => props.theme.fontColor};
 `;
 
+const BottomBox = styled.View`
+    position: absolute;
+    bottom: 0px;
+    flex: 1;
+`;
+
 const InfoButton = styled.TouchableOpacity`
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    right: 12px;
+    bottom: 60px;
 `;
 
 export default function DrawerContent(props) {
@@ -43,8 +50,11 @@ export default function DrawerContent(props) {
             <TitleText>{t("title")}</TitleText>
         </TitleBox>
         <DrawerItemList {...props} />
-        <InfoButton onPress={() => navigation.navigate("Information")}>
-            <MaterialIcons name="info-outline" size={26} color={light ? "#101010" : "#fafafa"} />
-        </InfoButton>
+        <BottomBox>
+            <InfoButton onPress={() => navigation.navigate("Information")}>
+                <MaterialIcons name="info-outline" size={30} color={light ? "#101010" : "#fafafa"} />
+            </InfoButton>
+            <BannerAd size={BannerAdSize.BANNER} unitId="ca-app-pub-9076487351719022/3822400139" />
+        </BottomBox>
     </Container>;
 };

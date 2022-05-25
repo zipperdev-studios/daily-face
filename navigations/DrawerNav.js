@@ -13,11 +13,13 @@ export default function DrawerNav() {
     const { t } = useTranslation();
 
     return <Drawer.Navigator useLegacyImplementation={true} initialRouteName="Home" drawerContent={props => <DrawerContent {...props} />} screenOptions={{
-        headerTintColor: light ? "#101010" : "#fafafa", 
-        drawerType: "slide", 
+        drawerType: "back", 
+        drawerStyle: {
+            width: 320
+        }, 
         drawerLabelStyle: {
             fontWeight: "700", 
-            fontSize: 17, 
+            fontSize: 20, 
             paddingLeft: 6
         }, 
         headerTitleAlign: "center", 
@@ -28,12 +30,14 @@ export default function DrawerNav() {
     }}>
         <Drawer.Screen name="Home" options={{
             title: t("main"), 
+            headerTintColor: light ? "#101010" : "#fafafa", 
             headerTransparent: true, 
             headerTitleStyle: {
                 opacity: 0, 
             }
         }} component={Home} />
         <Drawer.Screen name="Settings" options={{
+            headerTintColor: light ? "#101010" : "#fafafa", 
             title: t("sets")
         }} component={Settings} />
     </Drawer.Navigator>;

@@ -9,12 +9,12 @@ const Container = styled.View`
     padding: 20px;
 `;
 
-export default function FormLayout({ children }) {
+export default function FormLayout({ children, style }) {
     return <DismissKeyboard>
-        <Container>
-            <KeyboardAvoidingView style={{ width: "100%", flex: 1 }} behavior={Platform.OS === "ios" ? "position" : "padding"} keyboardVerticalOffset={Platform.OS === "ios" ? 50 : 0}>
+        <KeyboardAvoidingView style={{ width: "100%", height: "100%", flex: 1 }} behavior={Platform.OS === "ios" ? "position" : "padding"} keyboardVerticalOffset={Platform.OS === "ios" ? 50 : -1000}>
+            <Container style={style}>
                 {children}
-            </KeyboardAvoidingView>
-        </Container>
+            </Container>
+        </KeyboardAvoidingView>
     </DismissKeyboard>;
 };

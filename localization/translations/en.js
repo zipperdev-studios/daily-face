@@ -7,8 +7,8 @@ export default {
     sets_normal: "Normal", 
     sets_lang: "Language", 
     sets_custom: "Customizing", 
-    sets_weatherT: "Add Daily Record Chart", 
-    sets_weatherP: "Add daily record chart to the main screen", 
+    sets_tempT: "Add Hourly Temperature Chart", 
+    sets_tempP: "Add the temperature chart for 3 hours on the main screen", 
     sets_dailyT: "Daily Notification", 
     sets_dailyP: "Send an alarm at 6am every day", 
     sets_changeLang: "Changing Default Language", 
@@ -23,7 +23,5 @@ export default {
 
     info: "Information", 
     infoTitle: "What's today's my face? Daily Face", 
-    infoDesc: `Daily Face is an app that expresses today's mood by classifying it into five categories along with various weather information every day. The face classification criteria are "Very Great", "Good", "Meh", "Not Good", and "Really Bad". Each face will change according to today's weather and discomfort index. Also, simple phrases are expressed. You can edit this phrase in the Customize menu in the Settings window :)`, 
-
-    langSelect: "Select language"
+    infoDesc: `Daily Face is an app that expresses today's mood by classifying it into five categories along with various weather information every day. The face classification criteria are "Very Great", "Good", "Meh", "Not Good", and "Really Bad". Each face will change according to today's weather and discomfort index. Also, simple phrases are expressed. You can edit this phrase in the Customize menu in the Settings window :)`
 };

@@ -1,0 +1,52 @@
+diff --git a/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobBannerViewManager.java b/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobBannerViewManager.java
+index eab17b6..b39b648 100644
+--- a/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobBannerViewManager.java
++++ b/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobBannerViewManager.java
+@@ -1,7 +1,7 @@
+ package com.sbugert.rnadmob;
+ 
+ import android.content.Context;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ import android.view.View;
+ 
+ import com.facebook.react.bridge.Arguments;
+diff --git a/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobInterstitialAdModule.java b/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobInterstitialAdModule.java
+index bad5a0a..46967b0 100644
+--- a/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobInterstitialAdModule.java
++++ b/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobInterstitialAdModule.java
+@@ -2,7 +2,7 @@ package com.sbugert.rnadmob;
+ 
+ import android.os.Handler;
+ import android.os.Looper;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ 
+ import com.facebook.react.bridge.Arguments;
+ import com.facebook.react.bridge.Callback;
+diff --git a/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobRewardedVideoAdModule.java b/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobRewardedVideoAdModule.java
+index 0d2b0dc..9524d20 100644
+--- a/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobRewardedVideoAdModule.java
++++ b/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNAdMobRewardedVideoAdModule.java
+@@ -2,7 +2,7 @@ package com.sbugert.rnadmob;
+ 
+ import android.os.Handler;
+ import android.os.Looper;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ 
+ import com.facebook.react.bridge.Arguments;
+ import com.facebook.react.bridge.Callback;
+diff --git a/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNPublisherBannerViewManager.java b/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNPublisherBannerViewManager.java
+index ebe2252..a1a7e43 100644
+--- a/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNPublisherBannerViewManager.java
++++ b/node_modules/react-native-admob/android/src/main/java/com/sbugert/rnadmob/RNPublisherBannerViewManager.java
+@@ -1,7 +1,7 @@
+ package com.sbugert.rnadmob;
+ 
+ import android.content.Context;
+-import android.support.annotation.Nullable;
++import androidx.annotation.Nullable;
+ import android.view.View;
+ 
+ import com.facebook.react.bridge.Arguments;

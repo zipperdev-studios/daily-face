@@ -12,6 +12,12 @@ target 'dailyface' do
     :hermes_enabled => false
   )
 
+  pod 'react-native-admob', :path => '../node_modules/react-native-admob'
+
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
+  pod 'RNGoogleMobileAds', :path => '../node_modules/react-native-google-mobile-ads'
+
   target 'dailyfaceTests' do
     inherit! :complete
     # Pods for testing

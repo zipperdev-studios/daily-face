@@ -1,4 +1,4 @@
-package com.dailyface;
+package com.zipper_.dailyface;
 import expo.modules.ReactActivityDelegateWrapper;
 import com.facebook.react.ReactActivityDelegate;
 
