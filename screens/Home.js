@@ -168,6 +168,7 @@ const Darkmode = styled.View`
     background-color: rgba(0, 20, 0, 0.4);
     width: 200%;
     height: 100%;
+    align-self: center;
 `;
 
 export default function Home({ navigation }) {

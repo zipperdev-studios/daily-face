@@ -1,4 +1,4 @@
-# Daily Face 데일리 페이스 2.0.0
+# Daily Face 데일리 페이스 2.0.1
 
 Daily Face is an app that expresses today's mood by classifying it into five categories
 along with various weather information every day. The face classification criteria are

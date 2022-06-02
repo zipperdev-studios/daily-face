@@ -11,6 +11,7 @@ const Button = styled.TouchableOpacity`
     align-items: center;
     background-color: ${props => props.disabled ? (props.isScrollView ? props.theme.fontColor : props.theme.transparent.little) : props.theme.accent};
     border-radius: 5px;
+    z-index: 10;
     bottom: 0;
     opacity: ${props => props.disabled ? (props.isScrollView ? "0.8" : "0.6") : "1"};
 `;

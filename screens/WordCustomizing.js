@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import { Platform, ToastAndroid } from "react-native";
 import { useForm } from "react-hook-form";
 import { RadioButton } from "react-native-paper";
-import { BannerAd, BannerAdSize } from "@react-native-admob/admob";
 import { useReactiveVar } from "@apollo/client";
 import styled from "styled-components/native";
 import FormLayout from "../components/layout/FormLayout";
@@ -90,7 +89,7 @@ const StyledTextInput = styled.TextInput`
 `;
 
 const Button = styled.TouchableOpacity`
-    background-color: ${props => props.theme.fontColor};
+    background-color: ${props => props.theme.transparent.none};
     width: 100%;
     height: 42px;
     border-radius: 4px;
@@ -101,7 +100,7 @@ const Button = styled.TouchableOpacity`
 `;
 
 const ButtonText = styled.Text`
-    color: ${props => props.theme.lightColor};
+    color: ${props => props.theme.fontColor};
     font-family: Pretendard-Medium;
     font-size: 17px;
 `;
@@ -182,7 +181,7 @@ export default function WordCustomizing() {
             blurPhraseInputs();
         };
     }, [ checked ]);
-    return <FormLayout style={{ paddingBottom: 0 }}>
+    return <FormLayout>
         <PreviewContainer>
             <PreviewText isAuto={!watch("greatDesc") && checked === "custom"}>{checked === "custom" ? (!watch("greatDesc") ? (i18n.language === "en" ? "If you want to see a preview, please write a 'Very Good Phrase' :)" : "미리보기를 보고 싶으시다면 '아주 좋음 문구'를 작성해 주세요 :)") : `${watch("greatDesc") ? watch("greatDesc") : ""}${i18n.language === "en" ? previewTextsEn[checked] : previewTextsKo[checked]}`) : i18n.language === "en" ? previewTextsEn[checked] : previewTextsKo[checked]}</PreviewText>
         </PreviewContainer>
@@ -237,11 +236,10 @@ export default function WordCustomizing() {
                         ) : null}
                     </CustomBox>
                 </ThemesScrollView>
-                <SaveButton isScrollView={true} text={checked === "custom" ? (i18n.language === "en" ? "Press 'Submit and Apply' To Save" : i18n.language === "ko" ? "저장하기 위해 적용하기 버튼을 눌러주세요" : "Press 'Submit and Apply' To Save") : null} lang={i18n.language} disabled={customTheme === checked || (customTheme === false && checked === "default") || checked === "custom"} onPress={async () => {
+                <SaveButton style={{ elevation: 10 }} isScrollView={true} text={checked === "custom" ? (i18n.language === "en" ? "Press 'Submit and Apply' To Save" : i18n.language === "ko" ? "저장하기 위해 적용하기 버튼을 눌러주세요" : "Press 'Submit and Apply' To Save") : null} lang={i18n.language} disabled={customTheme === checked || (customTheme === false && checked === "default") || checked === "custom"} onPress={async () => {
                     await setCustomTheme(checked === "default" ? false : checked);
                 }} />
             </Themes>
         </ThemeContainer>
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId="ca-app-pub-9076487351719022/3826834214" style={{ alignSelf: "center", marginTop: 10 }} />
     </FormLayout>;
 };
