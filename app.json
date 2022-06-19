@@ -9,6 +9,7 @@
     "icon": "./assets/icon.png",
     "backgroundColor": "#FFFFFF",
     "primaryColor": "#FFFFFF",
+    "jsEngine": "hermes",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "cover",

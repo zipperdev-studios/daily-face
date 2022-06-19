@@ -80,7 +80,7 @@ import com.android.build.OutputFile
 
 project.ext.react = [
     entryFile: "index.js", 
-    enableHermes: true,  // clean and rebuild if changing
+    enableHermes: (findProperty('expo.jsEngine') ?: "jsc") == "hermes",  // clean and rebuild if changing
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
@@ -130,6 +130,10 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false
     }
 
     defaultConfig {
