@@ -26,7 +26,8 @@ export default function DrawerNav() {
         headerTitleStyle: {
             fontFamily: "Pretendard-Bold", 
             fontSize: 22
-        }
+        }, 
+        lazy: false
     }}>
         <Drawer.Screen name="Home" options={{
             title: t("main"), 

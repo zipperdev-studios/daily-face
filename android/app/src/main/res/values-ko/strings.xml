@@ -1,5 +1,5 @@
 <resources>
   <!-- Below line is handled by '@expo/configure-splash-screen' command and it's discouraged to modify it manually -->
   <string name="expo_splash_screen_resize_mode" translatable="false">cover</string>
-  <string name="app_name">Daily Face</string>
+  <string name="app_name">데일리 페이스</string>
 </resources>

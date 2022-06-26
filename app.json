@@ -1,8 +1,7 @@
 {
   "name": "dailyface",
-  "displayName": "dailyface",
   "expo": {
-    "name": "dailyface",
+    "name": "Daily Face",
     "slug": "daily-face",
     "version": "2.0.2",
     "orientation": "portrait",
