@@ -1,5 +1,4 @@
 import axios from "axios";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RefreshControl, Dimensions } from "react-native";
@@ -90,7 +89,7 @@ const WeatherBottomSeparator = styled.View`
 
 const DetailBox = styled.View`
     margin-top: 30px;
-    margin-bottom: 70px;
+    margin-bottom: 75px;
 `;
 
 const FeelBox = styled.View`
@@ -548,7 +547,7 @@ export default function Home({ navigation }) {
                                         </>
                                 ) : null}
                             </DetailBox>
-                            <BannerAd size={BannerAdSize.FULL_BANNER} unitId="ca-app-pub-9076487351719022/9809223989" style={{ alignSelf: "center", elevation: 20, position: "absolute", bottom: 0 }} />
+                            <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId="ca-app-pub-9076487351719022/9809223989" style={{ alignSelf: "center", elevation: 20, position: "absolute", bottom: 0 }} />
                         </>
                     )}
                 </>

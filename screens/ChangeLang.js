@@ -56,6 +56,6 @@ export default function ChangeLang({ navigation }) {
                 await setLanguage(checked);
             }} />
         </Radios>
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId="ca-app-pub-9076487351719022/1398598537" style={{ alignSelf: "center", marginTop: 10 }} />
+        <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId="ca-app-pub-9076487351719022/1398598537" style={{ alignSelf: "center", marginTop: 10 }} />
     </Container>;
 };

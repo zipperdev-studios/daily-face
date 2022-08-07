@@ -43,6 +43,6 @@ export default function Information() {
         <InfoTitle>{t("infoTitle")}</InfoTitle>
         <InfoDesc>{t("infoDesc")}</InfoDesc>
         <Created>2021 &copy; Zipperdev Studios</Created>
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId="ca-app-pub-9076487351719022/5690580222" style={{ alignSelf: "center", position: "absolute", bottom: 0 }} />
+        <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId="ca-app-pub-9076487351719022/5690580222" style={{ alignSelf: "center", position: "absolute", bottom: 0 }} />
     </Container>;
 };

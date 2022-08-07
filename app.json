@@ -10,7 +10,7 @@
     "primaryColor": "#FFFFFF",
     "jsEngine": "hermes",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/apploading.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
@@ -25,7 +25,7 @@
       "userInterfaceStyle": "automatic"
     },
     "android": {
-      "versionCode": 12,
+      "versionCode": 11,
       "userInterfaceStyle": "automatic",
       "softwareKeyboardLayoutMode": "pan",
       "useNextNotificationsApi": true,
@@ -33,9 +33,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundImage": "./assets/adaptive-background.png"
       },
-      "config": {
-        "googleMobileAdsAppId": "ca-app-pub-9076487351719022~1362869709"
-      }, 
       "package": "com.zipper_.dailyface",
       "permissions": [
         "INTERNET",

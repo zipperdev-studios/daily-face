@@ -158,7 +158,7 @@ export default function Settings({ navigation }) {
                 </SetContent>
             </SetBoxBtn>
         </SetsContainer>
-        <SaveButton lang={i18n.language} style={{ bottom: 70 }} disabled={sendNotifyState === sendNotifications && showTempChartState === showTempChart} onPress={async () => {
+        <SaveButton lang={i18n.language} style={{ bottom: 75 }} disabled={sendNotifyState === sendNotifications && showTempChartState === showTempChart} onPress={async () => {
             if (sendNotifyState !== sendNotifications) {
                 await setSendNotifications(sendNotifyState);
             };
@@ -166,6 +166,6 @@ export default function Settings({ navigation }) {
                 await setShowTempChart(showTempChartState);
             };
         }} />
-        <BannerAd size={BannerAdSize.FULL_BANNER} unitId="ca-app-pub-9076487351719022/3255988573" style={{ alignSelf: "center", position: "absolute", bottom: 0 }} />
+        <BannerAd size={BannerAdSize.ADAPTIVE_BANNER} unitId="ca-app-pub-9076487351719022/3255988573" style={{ alignSelf: "center", position: "absolute", bottom: 0 }} />
     </Container>;
 };

@@ -23,7 +23,6 @@
   <uses-permission tools:node="remove" android:name="android.permission.READ_PHONE_STATE" />
   <uses-permission tools:node="remove" android:name="com.anddoes.launcher.permission.UPDATE_COUNT" />
   <uses-permission tools:node="remove" android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-  <uses-permission tools:node="remove" android:name="com.google.android.c2dm.permission.RECEIVE" />
   <uses-permission tools:node="remove" android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
   <uses-permission tools:node="remove" android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
   <uses-permission tools:node="remove" android:name="com.htc.launcher.permission.READ_SETTINGS" />
@@ -59,7 +58,8 @@
       android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
       android:launchMode="singleTask"
       android:windowSoftInputMode="adjustPan"
-      android:theme="@style/Theme.App.SplashScreen"
+      android:theme="@style/AppTheme"
+      android:exported="true"
     >
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
