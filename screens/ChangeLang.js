@@ -43,7 +43,7 @@ export default function ChangeLang({ navigation }) {
     }, [ checked ]);
 
     return <Container>
-        <Title>{checked === "en" ? "Select language" : checked === "ko" ? "언어 선택" : "Select language"}</Title>
+        <Title allowFontScaling={false}>{checked === "en" ? "Select language" : checked === "ko" ? "언어 선택" : "Select language"}</Title>
         <Radios>
             <RadioButton.Group onValueChange={async value => {
                 setChecked(value);

@@ -383,8 +383,8 @@ export default function Home({ navigation }) {
         }>
             {locationError ? (
                 <>
-                    <ErrorMessage style={{ marginTop: 120 }}>{locationError}</ErrorMessage>
-                    <ErrorMessage>{i18n.language === "en" ? "Try again later" : "나중에 다시 시도해보세요"}</ErrorMessage>
+                    <ErrorMessage allowFontScaling={false} style={{ marginTop: 120 }}>{locationError}</ErrorMessage>
+                    <ErrorMessage allowFontScaling={false}>{i18n.language === "en" ? "Try again later" : "나중에 다시 시도해보세요"}</ErrorMessage>
                 </>
             ) : (
                 <>
@@ -392,20 +392,20 @@ export default function Home({ navigation }) {
                     {(weatherData?.weather && weatherData?.airPollution) && (
                         <>
                             <WeatherBox>
-                                <WeatherCityText>{cityName ? cityName : "불러올 수 없음"}</WeatherCityText>
+                                <WeatherCityText allowFontScaling={false}>{cityName ? cityName : "불러올 수 없음"}</WeatherCityText>
                                 <FirstWeatherContainer>
                                     <MaterialCommunityIcons style={{ marginTop: 2, marginRight: 6 }} name={weatherIcon} size={70} color="#fafafa" />
-                                    <WeatherTemp>{Math.round(weatherData?.weather.main.temp)}&#8451;</WeatherTemp>
+                                    <WeatherTemp allowFontScaling={false}>{Math.round(weatherData?.weather.main.temp)}&#8451;</WeatherTemp>
                                 </FirstWeatherContainer>
                                 <WeatherBottomBox>
-                                    <WeatherText>{weatherType}</WeatherText>
+                                    <WeatherText allowFontScaling={false}>{weatherType}</WeatherText>
                                     <WeatherBottomSeparator />
                                     <MaterialCommunityIcons style={{ marginRight: 1, marginBottom: 8 }} name="thermometer-chevron-up" size={24} color="#fafafa" />
-                                    <WeatherText style={{ fontFamily: "Pretendard-Medium", marginRight: 6 }}>
+                                    <WeatherText allowFontScaling={false} style={{ fontFamily: "Pretendard-Medium", marginRight: 6 }}>
                                         {Math.round(weatherData.weather.main.temp_max)}&#8451;
                                     </WeatherText>
                                     <MaterialCommunityIcons style={{ marginRight: 1, marginBottom: 8 }} name="thermometer-chevron-down" size={24} color="#fafafa" />
-                                    <WeatherText style={{ fontFamily: "Pretendard-Medium" }}>
+                                    <WeatherText allowFontScaling={false} style={{ fontFamily: "Pretendard-Medium" }}>
                                         {Math.round(weatherData.weather.main.temp_min)}&#8451;
                                     </WeatherText>
                                 </WeatherBottomBox>
@@ -415,13 +415,13 @@ export default function Home({ navigation }) {
                                     <FeelContainer>
                                         <DetailIndexBox>
                                             <MaterialCommunityIcons style={{ marginBottom: 1 }} name="thermometer" size={30} color="#fafafa" />
-                                            <DetailText>{i18n.language === "en" ? "Feeling Temp" : "체감온도"}</DetailText>
-                                            <DetailText>{Math.round(weatherData.weather.main.feels_like)}&#8451;</DetailText>
+                                            <DetailText allowFontScaling={false}>{i18n.language === "en" ? "Feeling Temp" : "체감온도"}</DetailText>
+                                            <DetailText allowFontScaling={false}>{Math.round(weatherData.weather.main.feels_like)}&#8451;</DetailText>
                                         </DetailIndexBox>
                                         <DetailIndexBox>
                                             <MaterialCommunityIcons style={{ marginBottom: 1 }} name="air-humidifier" size={30} color="#fafafa" />
-                                            <DetailText>{i18n.language === "en" ? "Humidity" : "습도"}</DetailText>
-                                            <DetailText>{Math.round(weatherData.weather.main.humidity)}&#37;</DetailText>
+                                            <DetailText allowFontScaling={false}>{i18n.language === "en" ? "Humidity" : "습도"}</DetailText>
+                                            <DetailText allowFontScaling={false}>{Math.round(weatherData.weather.main.humidity)}&#37;</DetailText>
                                         </DetailIndexBox>
                                         <DetailIndexBox>
                                             <MaterialCommunityIcons style={{ marginBottom: 1 }} name="weather-sunset-up" size={30} color="#fafafa" />
@@ -480,8 +480,8 @@ export default function Home({ navigation }) {
                                             }
                                         }} hideLegend={true} />
                                         <MicrodustTextBox>
-                                            <MicrodustText>{i18n.language === "en" ? "Fine Dust" : "미세먼지"}</MicrodustText>
-                                            <MicrodustText>{weatherData?.airPollution.list[0].components.pm10.toFixed(1)}pm</MicrodustText>
+                                            <MicrodustText allowFontScaling={false}>{i18n.language === "en" ? "Fine Dust" : "미세먼지"}</MicrodustText>
+                                            <MicrodustText allowFontScaling={false}>{weatherData?.airPollution.list[0].components.pm10.toFixed(1)}pm</MicrodustText>
                                         </MicrodustTextBox>
                                     </MicrodustBox>
                                     <MicrodustBox>
@@ -506,14 +506,14 @@ export default function Home({ navigation }) {
                                             }
                                         }} hideLegend={true} />
                                         <MicrodustTextBox>
-                                            <MicrodustText style={{ fontSize: 16.2 }}>{i18n.language === "en" ? "Ultra Fine dust" : "초미세먼지"}</MicrodustText>
-                                            <MicrodustText>{weatherData.airPollution.list[0].components.pm2_5.toFixed(1)}pm</MicrodustText>
+                                            <MicrodustText allowFontScaling={false} style={{ fontSize: 16.2 }}>{i18n.language === "en" ? "Ultra Fine dust" : "초미세먼지"}</MicrodustText>
+                                            <MicrodustText allowFontScaling={false}>{weatherData.airPollution.list[0].components.pm2_5.toFixed(1)}pm</MicrodustText>
                                         </MicrodustTextBox>
                                     </MicrodustBox>
                                 </MicrodustContainer>
                                 {showTempChart ? (
                                     <>
-                                        <ChartText>{i18n.language === "en" ? "Temp History Chart" : "온도 변화 차트"}</ChartText>
+                                        <ChartText allowFontScaling={false}>{i18n.language === "en" ? "Temp History Chart" : "온도 변화 차트"}</ChartText>
                                         {forecast ? (
                                             <LineChart
                                                 style={{ alignSelf: "center", marginRight: 16, marginTop: 4 }}
@@ -542,7 +542,7 @@ export default function Home({ navigation }) {
                                                 bezier
                                             />
                                         ) : (
-                                            <ErrorMessage>온도 정보를 불러올 수 없어요</ErrorMessage>
+                                            <ErrorMessage allowFontScaling={false}>온도 정보를 불러올 수 없어요</ErrorMessage>
                                         )}
                                         </>
                                 ) : null}

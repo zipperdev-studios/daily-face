@@ -1,4 +1,4 @@
-import { AppRegistry, Platform } from 'react-native';
+import { AppRegistry, Platform, Text, TextInput } from 'react-native';
 
 import App from './App';
 

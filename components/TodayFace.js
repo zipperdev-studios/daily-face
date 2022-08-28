@@ -78,11 +78,11 @@ export default function TodayFace({ weatherData, loading }) {
     return <FaceBox icon={icon} style={icon !== "loading" ? { elevation: 14, shadowOpacity: 0.05, shadowColor: "#000000", shadowOffset: { width: 0, height: -2 } } : null}>
         {icon === "loading" ? <ActivityIndicator style={{ marginTop: 10 }} size={60} color={light ? "#101010" : "#efefef"} /> : <FontAwesome5 name={icon} size={145} color="#fafafa" />}
         <FaceDetail>
-            <FaceType loading={icon === "loading"}>{icon === "loading" ? (i18n.language === "en" ? "Loading..." : "로딩 중...") : i18n.language === "en" ? typeTextsEn[icons.indexOf(icon)] : typeTextsKo[icons.indexOf(icon)]}</FaceType>
+            <FaceType  allowFontScaling={false} loading={icon === "loading"}>{icon === "loading" ? (i18n.language === "en" ? "Loading..." : "로딩 중...") : i18n.language === "en" ? typeTextsEn[icons.indexOf(icon)] : typeTextsKo[icons.indexOf(icon)]}</FaceType>
             {icon === "loading" ? (
-                <FaceDesc loading={true}>{""}</FaceDesc>
+                <FaceDesc allowFontScaling={false} loading={true}>{""}</FaceDesc>
             ) : (
-                <FaceDesc loading={false}>{descText}</FaceDesc>
+                <FaceDesc allowFontScaling={false} loading={false}>{descText}</FaceDesc>
             )}
         </FaceDetail>
     </FaceBox>;

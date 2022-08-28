@@ -47,7 +47,7 @@ export default function DrawerContent(props) {
 
     return <Container>
         <TitleBox>
-            <TitleText>{t("title")}</TitleText>
+            <TitleText allowFontScaling={false}>{t("title")}</TitleText>
         </TitleBox>
         <DrawerItemList {...props} />
         <BottomBox>

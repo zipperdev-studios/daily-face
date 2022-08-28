@@ -84,12 +84,12 @@ export default function Settings({ navigation }) {
     }, [ isFocused ]);
     
     return <Container>
-        <Title>{t("sets_normal")}</Title>
+        <Title allowFontScaling={false}>{t("sets_normal")}</Title>
         <SetsContainer style={{ marginBottom: 12 }}>
             <SetBox isLast={false}>
                 <SetContent>
-                    <SetText>{t("sets_tempT")}</SetText>
-                    <SetDesc>{t("sets_tempP")}</SetDesc>
+                    <SetText allowFontScaling={false}>{t("sets_tempT")}</SetText>
+                    <SetDesc allowFontScaling={false}>{t("sets_tempP")}</SetDesc>
                 </SetContent>
                 <ToggleSwitch
                     isOn={showTempChartState}
@@ -107,8 +107,8 @@ export default function Settings({ navigation }) {
             </SetBox>
             <SetBox isLast={true}> 
                 <SetContent>
-                    <SetText>{t("sets_dailyT")}</SetText>
-                    <SetDesc>{t("sets_dailyP")}</SetDesc>
+                    <SetText allowFontScaling={false}>{t("sets_dailyT")}</SetText>
+                    <SetDesc allowFontScaling={false}>{t("sets_dailyP")}</SetDesc>
                 </SetContent>
                 <ToggleSwitch
                     isOn={sendNotifyState}
@@ -140,21 +140,21 @@ export default function Settings({ navigation }) {
                 />
             </SetBox>
         </SetsContainer>
-        <Title>{t("sets_lang")}</Title>
+        <Title allowFontScaling={false}>{t("sets_lang")}</Title>
         <SetsContainer style={{ marginBottom: 12 }}>
             <SetBoxBtn isLast={true} onPress={() => navigation.navigate("ChangeLang")}>
                 <SetContent>
-                    <SetText>{t("sets_changeLang")}</SetText>
-                    <SetDesc>{t("sets_changeLangP")}</SetDesc>
+                    <SetText allowFontScaling={false}>{t("sets_changeLang")}</SetText>
+                    <SetDesc allowFontScaling={false}>{t("sets_changeLangP")}</SetDesc>
                 </SetContent>
             </SetBoxBtn>
         </SetsContainer>
-        <Title>{t("sets_custom")}</Title>
+        <Title allowFontScaling={false}>{t("sets_custom")}</Title>
         <SetsContainer>
             <SetBoxBtn isLast={true} onPress={() => navigation.navigate("WordCustomizing")}>
                 <SetContent>
-                    <SetText>{t("sets_dailyPhraseCustom")}</SetText>
-                    <SetDesc>{t("sets_dailyPhraseCustomP")}</SetDesc>
+                    <SetText allowFontScaling={false}>{t("sets_dailyPhraseCustom")}</SetText>
+                    <SetDesc allowFontScaling={false}>{t("sets_dailyPhraseCustomP")}</SetDesc>
                 </SetContent>
             </SetBoxBtn>
         </SetsContainer>

@@ -24,6 +24,6 @@ const ButtonText = styled.Text`
 
 export default function SaveButton({ text=null, lang, disabled, onPress, style, isScrollView=false }) {
     return <Button activeOpacity={0.6} isScrollView={isScrollView} disabled={disabled} onPress={onPress} style={style}>
-        <ButtonText isScrollView={isScrollView}>{text === null ? (disabled ? (lang === "en" ? "No Changes To Save" : lang === "ko" ? "저장할 변경 사항 없음" : "Save") : (lang === "en" ? "Save" : lang === "ko" ? "저장하기" : "Save")) : text}</ButtonText>
+        <ButtonText allowFontScaling={false} isScrollView={isScrollView}>{text === null ? (disabled ? (lang === "en" ? "No Changes To Save" : lang === "ko" ? "저장할 변경 사항 없음" : "Save") : (lang === "en" ? "Save" : lang === "ko" ? "저장하기" : "Save")) : text}</ButtonText>
     </Button>;
 };

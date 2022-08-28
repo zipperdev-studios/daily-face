@@ -183,10 +183,10 @@ export default function WordCustomizing() {
     }, [ checked ]);
     return <FormLayout>
         <PreviewContainer>
-            <PreviewText isAuto={!watch("greatDesc") && checked === "custom"}>{checked === "custom" ? (!watch("greatDesc") ? (i18n.language === "en" ? "If you want to see a preview, please write a 'Very Good Phrase' :)" : "미리보기를 보고 싶으시다면 '아주 좋음 문구'를 작성해 주세요 :)") : `${watch("greatDesc") ? watch("greatDesc") : ""}${i18n.language === "en" ? previewTextsEn[checked] : previewTextsKo[checked]}`) : i18n.language === "en" ? previewTextsEn[checked] : previewTextsKo[checked]}</PreviewText>
+            <PreviewText allowFontScaling={false} isAuto={!watch("greatDesc") && checked === "custom"}>{checked === "custom" ? (!watch("greatDesc") ? (i18n.language === "en" ? "If you want to see a preview, please write a 'Very Good Phrase' :)" : "미리보기를 보고 싶으시다면 '아주 좋음 문구'를 작성해 주세요 :)") : `${watch("greatDesc") ? watch("greatDesc") : ""}${i18n.language === "en" ? previewTextsEn[checked] : previewTextsKo[checked]}`) : i18n.language === "en" ? previewTextsEn[checked] : previewTextsKo[checked]}</PreviewText>
         </PreviewContainer>
         <ThemeContainer>
-            <ThemeTitle>{t("custom_select")}</ThemeTitle>
+            <ThemeTitle allowFontScaling={false}>{t("custom_select")}</ThemeTitle>
             <Themes>
                 <ThemesScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 50 }}>
                     <RadioButton.Group value={checked} style={{ backgroundColor: "#000" }}>
@@ -205,34 +205,34 @@ export default function WordCustomizing() {
                     </RadioButton.Group>
                     <CustomBox style={checked !== "custom" ? { opacity: 0.4 } : null} pointerEvents={checked === "custom" ? "auto" : "box-none"}>
                         <TextFieldBox>
-                            <TextFieldText lang={i18n.language}>{i18n.language === "en" ? "Very Great" : "아주 좋음"}</TextFieldText>
-                            <StyledTextInput ref={greatDescRef} placeholderTextColor={light ? "#555555" : "#cdcdcd"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("greatDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Very Great Phrase" : "아주 좋음 문구"} returnKeyType="next" onSubmitEditing={() => onNext(goodDescRef)} onChangeText={text => setValue("greatDesc", text)} />
+                            <TextFieldText allowFontScaling={false} lang={i18n.language}>{i18n.language === "en" ? "Very Great" : "아주 좋음"}</TextFieldText>
+                            <StyledTextInput allowFontScaling={false} ref={greatDescRef} placeholderTextColor={light ? "#555555" : "#cdcdcd"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("greatDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Very Great Phrase" : "아주 좋음 문구"} returnKeyType="next" onSubmitEditing={() => onNext(goodDescRef)} onChangeText={text => setValue("greatDesc", text)} />
                         </TextFieldBox>
                         <TextFieldBox>
-                            <TextFieldText lang={i18n.language}>{i18n.language === "en" ? "Good" : "좋음"}</TextFieldText>
-                            <StyledTextInput ref={goodDescRef} placeholderTextColor={light ? "#555555" : "#cdcdcd"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("goodDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Good Phrase" : "좋음 문구"} returnKeyType="next" onSubmitEditing={() => onNext(mehDescRef)} onChangeText={text => setValue("goodDesc", text)} />
+                            <TextFieldText allowFontScaling={false} lang={i18n.language}>{i18n.language === "en" ? "Good" : "좋음"}</TextFieldText>
+                            <StyledTextInput allowFontScaling={false} ref={goodDescRef} placeholderTextColor={light ? "#555555" : "#cdcdcd"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("goodDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Good Phrase" : "좋음 문구"} returnKeyType="next" onSubmitEditing={() => onNext(mehDescRef)} onChangeText={text => setValue("goodDesc", text)} />
                         </TextFieldBox>
                         <TextFieldBox>
-                            <TextFieldText lang={i18n.language}>{i18n.language === "en" ? "Meh" : "보통"}</TextFieldText>
-                            <StyledTextInput ref={mehDescRef} placeholderTextColor={light ? "#555555" : "#cdcdcd"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("mehDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Meh Phrase" : "보통 문구"} returnKeyType="next" onSubmitEditing={() => onNext(frownDescRef)} onChangeText={text => setValue("mehDesc", text)} />
+                            <TextFieldText allowFontScaling={false} lang={i18n.language}>{i18n.language === "en" ? "Meh" : "보통"}</TextFieldText>
+                            <StyledTextInput allowFontScaling={false} ref={mehDescRef} placeholderTextColor={light ? "#555555" : "#cdcdcd"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("mehDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Meh Phrase" : "보통 문구"} returnKeyType="next" onSubmitEditing={() => onNext(frownDescRef)} onChangeText={text => setValue("mehDesc", text)} />
                         </TextFieldBox>
                         <TextFieldBox>
-                            <TextFieldText lang={i18n.language}>{i18n.language === "en" ? "Not Good" : "나쁨"}</TextFieldText>
-                            <StyledTextInput ref={frownDescRef} placeholderTextColor={light ? "#555555" : "#cdcdcd"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("frownDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Not Good Phrase" : "나쁨 문구"} returnKeyType="next" onSubmitEditing={() => onNext(angryDescRef)} onChangeText={text => setValue("frownDesc", text)} />
+                            <TextFieldText allowFontScaling={false} lang={i18n.language}>{i18n.language === "en" ? "Not Good" : "나쁨"}</TextFieldText>
+                            <StyledTextInput allowFontScaling={false} ref={frownDescRef} placeholderTextColor={light ? "#555555" : "#cdcdcd"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("frownDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Not Good Phrase" : "나쁨 문구"} returnKeyType="next" onSubmitEditing={() => onNext(angryDescRef)} onChangeText={text => setValue("frownDesc", text)} />
                         </TextFieldBox>
                         <TextFieldBox>
-                            <TextFieldText lang={i18n.language}>{i18n.language === "en" ? "Really Bad" : "아주 나쁨"}</TextFieldText>
-                            <StyledTextInput ref={angryDescRef} placeholderTextColor={light ? "#555555" : "#efefef"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("angryDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Really Bad Phrase" : "아주 나쁨 문구"} returnKeyType="done" onChangeText={text => setValue("angryDesc", text)} />
+                            <TextFieldText allowFontScaling={false} lang={i18n.language}>{i18n.language === "en" ? "Really Bad" : "아주 나쁨"}</TextFieldText>
+                            <StyledTextInput allowFontScaling={false} ref={angryDescRef} placeholderTextColor={light ? "#555555" : "#efefef"} selectionColor={light ? "#383838" : "#e1e1e1"} value={watch("angryDesc")} autoCapitalize="none" placeholder={i18n.language === "en" ? "Really Bad Phrase" : "아주 나쁨 문구"} returnKeyType="done" onChangeText={text => setValue("angryDesc", text)} />
                         </TextFieldBox>
                         <Button onPress={() => {
                             clearErrors();
                             blurPhraseInputs();
                             handleSubmit(onValid)();
                         }}>
-                            <ButtonText>{i18n.language === "en" ? "Submit and Apply" : "적용하기"}</ButtonText>
+                            <ButtonText allowFontScaling={false}>{i18n.language === "en" ? "Submit and Apply" : "적용하기"}</ButtonText>
                         </Button>
                         {Object.keys(errors)[0] ? (
-                            <ErrorText>{i18n.language === "en" ? "Please write all of them in 40 characters or less." : "모두 40자 이하로 필수로 적어주세요."}</ErrorText>
+                            <ErrorText allowFontScaling={false}>{i18n.language === "en" ? "Please write all of them in 40 characters or less." : "모두 40자 이하로 필수로 적어주세요."}</ErrorText>
                         ) : null}
                     </CustomBox>
                 </ThemesScrollView>
